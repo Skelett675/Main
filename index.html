@@ -1,8 +1,11 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Main Website</title>
+
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -10,15 +13,19 @@
 
 <div class="glow"></div>
 
-<!-- SETTINGS BUTTON -->
-<button class="gear" onclick="toggleSettings()">⚙</button>
+<!-- Zahnrad -->
+<button class="gear" onclick="toggleSettings()">
+⚙
+</button>
 
-<!-- SETTINGS -->
+<!-- Einstellungen -->
 <div class="settings" id="settings">
+
   <h3>Einstellungen</h3>
 
-  <label>Farbe</label>
-  <select onchange="setTheme(this.value)">
+  <label for="themeSelect">Farbe</label>
+
+  <select id="themeSelect" onchange="setTheme(this.value)">
     <option value="blue">Blau</option>
     <option value="gray">Grau</option>
     <option value="purple">Lila</option>
@@ -26,42 +33,93 @@
     <option value="green">Grün</option>
     <option value="orange">Orange</option>
   </select>
+
 </div>
 
-<!-- MAIN -->
+<!-- Hauptbereich -->
 <div class="container">
+
   <div class="card">
 
     <h1>Main Website</h1>
-    <p>Willkommen</p>
 
-    <button onclick="location.href='info.html'">Infos</button>
-    <button onclick="location.href='contact.html'">Kontakt</button>
-    <button onclick="location.href='terms.html'">Nutzungsbedingungen</button>
-    <button onclick="location.href='privacy.html'">Datenschutz</button>
-    <button onclick="location.href='qr.html'">QR Generator</button>
+    <p>
+      Willkommen auf der Hauptseite.
+    </p>
+
+    <button onclick="location.href='info.html'">
+      Infos
+    </button>
+
+    <button onclick="location.href='contact.html'">
+      Kontakt
+    </button>
+
+    <button onclick="location.href='terms.html'">
+      Nutzungsbedingungen
+    </button>
+
+    <button onclick="location.href='privacy.html'">
+      Datenschutz
+    </button>
+
+    <button onclick="location.href='qr.html'">
+      QR Generator
+    </button>
+
+    <button onclick="location.href='color.html'">
+      Farbcode Generator
+    </button>
 
   </div>
+
 </div>
 
-<!-- SCRIPT -->
 <script>
 function toggleSettings() {
   const s = document.getElementById("settings");
+
   if (!s) return;
-  s.style.display = (s.style.display === "block") ? "none" : "block";
+
+  if (s.style.display === "block") {
+    s.style.display = "none";
+  } else {
+    s.style.display = "block";
+  }
 }
 
 function setTheme(theme) {
-  document.documentElement.setAttribute("data-theme", theme);
-  localStorage.setItem("theme", theme);
+  document.documentElement.setAttribute(
+    "data-theme",
+    theme
+  );
+
+  localStorage.setItem(
+    "theme",
+    theme
+  );
 }
 
 window.onload = () => {
-  const theme = localStorage.getItem("theme");
-  if (theme) document.documentElement.setAttribute("data-theme", theme);
+  const theme =
+    localStorage.getItem("theme");
+
+  if (theme) {
+    document.documentElement.setAttribute(
+      "data-theme",
+      theme
+    );
+
+    const select =
+      document.getElementById("themeSelect");
+
+    if (select) {
+      select.value = theme;
+    }
+  }
 };
 </script>
 
 </body>
 </html>
+```
