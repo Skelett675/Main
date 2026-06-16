@@ -9,18 +9,15 @@
 
 <body>
 
-<!-- GLOW -->
 <div class="glow"></div>
 
-<!-- SETTINGS BUTTON -->
+<!-- SETTINGS -->
 <button class="gear" onclick="toggleSettings()">⚙</button>
 
-<!-- SETTINGS PANEL -->
 <div class="settings" id="settings">
   <h3>Einstellungen</h3>
 
-  <label>Farbe</label>
-  <select id="themeSelect" onchange="setTheme(this.value)">
+  <select onchange="setTheme(this.value)">
     <option value="blue">Blau</option>
     <option value="gray">Grau</option>
     <option value="purple">Lila</option>
@@ -37,6 +34,7 @@
     <h1>Main Website</h1>
     <p>Willkommen</p>
 
+    <!-- 🔥 ALLE BUTTONS WIEDER DA -->
     <button onclick="location.href='info.html'">Infos</button>
     <button onclick="location.href='contact.html'">Kontakt</button>
     <button onclick="location.href='terms.html'">Terms</button>
@@ -47,36 +45,29 @@
   </div>
 </div>
 
-<!-- SCRIPT -->
 <script>
-
 function toggleSettings() {
   document.getElementById("settings").classList.toggle("show");
 }
 
-/* THEME SYSTEM */
-function setTheme(theme) {
-  let color = "";
+function setTheme(color) {
+  const map = {
+    blue: "#3996F9",
+    gray: "#9aa0a6",
+    purple: "#b84dff",
+    red: "#ff4d4d",
+    green: "#58f2a3",
+    orange: "#ff9f43"
+  };
 
-  switch(theme){
-    case "blue": color = "#3996F9"; break;
-    case "gray": color = "#9aa0a6"; break;
-    case "purple": color = "#b84dff"; break;
-    case "red": color = "#ff4d4d"; break;
-    case "green": color = "#58f2a3"; break;
-    case "orange": color = "#ff9f43"; break;
-  }
-
-  document.documentElement.style.setProperty("--accent", color);
-  localStorage.setItem("theme", theme);
+  document.documentElement.style.setProperty("--accent", map[color]);
+  localStorage.setItem("theme", color);
 }
 
-/* LOAD SAVED SETTINGS */
 window.onload = () => {
   const saved = localStorage.getItem("theme");
   if (saved) setTheme(saved);
 };
-
 </script>
 
 </body>
