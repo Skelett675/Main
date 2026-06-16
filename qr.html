@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>QR Generator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="glow"></div>
+
+<div class="container">
+  <div class="card">
+
+    <h1>QR Generator</h1>
+
+    <input id="text" placeholder="Text oder Link eingeben"
+      style="width:100%;padding:10px;border-radius:10px;border:none;margin-bottom:10px;">
+
+    <div id="dropzone">Bild hier reinziehen</div>
+    <input type="file" id="file" hidden>
+
+    <button onclick="generate()">QR erstellen</button>
+
+    <div id="qr"></div>
+
+    <button onclick="location.href='index.html'">Zurück</button>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<script>
+let logo = null;
+
+const dropzone = document.getElementById("dropzone");
+
+dropzone.style.padding = "20px";
+dropzone.style.border = "2px dashed var(--accent)";
+dropzone.style.borderRadius = "15px";
+dropzone.style.margin = "10px 0";
+dropzone.style.cursor = "pointer";
+
+dropzone.ondragover = e => {
+  e.preventDefault();
+  dropzone.style.boxShadow = "0 0 20px var(--accent)";
+};
+
+dropzone.ondrop = e => {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  handleFile(file);
+};
+
+dropzone.onclick = () => document.getElementById("file").click();
+
+document.getElementById("file").onchange = e => {
+  handleFile(e.target.files[0]);
+};
+
+function handleFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    logo = e.target.result;
+    dropzone.innerText = "Bild geladen ✔";
+  };
+  reader.readAsDataURL(file);
+}
+
+function generate() {
+  const text = document.getElementById("text").value;
+  const qrDiv = document.getElementById("qr");
+
+  qrDiv.innerHTML = "";
+
+  const canvas = document.createElement("canvas");
+
+  QRCode.toCanvas(canvas, text, {
+    width: 250,
+    margin: 2,
+    color: {
+      dark: "#000",
+      light: "#fff"
+    }
+  }, function (error) {
+    if (error) console.error(error);
+
+    // Rund machen
+    canvas.style.borderRadius = "20px";
+
+    qrDiv.appendChild(canvas);
+
+    // Logo in Mitte
+    if (logo) {
+      const img = document.createElement("img");
+      img.src = logo;
+
+      img.style.position = "absolute";
+      img.style.width = "60px";
+      img.style.height = "60px";
+      img.style.borderRadius = "50%";
+      img.style.left = "50%";
+      img.style.top = "50%";
+      img.style.transform = "translate(-50%, -50%)";
+
+      qrDiv.style.position = "relative";
+      qrDiv.appendChild(img);
+    }
+  });
+}
+</script>
+
+</body>
+</html>
