@@ -1,373 +1,178 @@
-```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Farbcode Generator</title>
+<title>Color Generator</title>
 <link rel="stylesheet" href="style.css">
 
 <style>
 .generator{
-    max-width:900px;
-    margin:auto;
+  max-width:900px;
+  margin:auto;
 }
 
 .preview{
-    min-height:100px;
-    padding:20px;
-    margin-top:20px;
+  min-height:120px;
+  margin-top:20px;
+  padding:20px;
 
-    background:rgba(255,255,255,0.06);
-    backdrop-filter:blur(20px);
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(20px);
+  border-radius:20px;
 
-    border-radius:20px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    font-size:40px;
-    font-weight:bold;
-
-    box-shadow:0 10px 40px rgba(0,0,0,0.5);
+  font-size:40px;
+  font-weight:bold;
 }
 
 .output{
-    margin-top:20px;
-    padding:15px;
-    border-radius:15px;
-    background:#111;
-    word-break:break-all;
+  margin-top:20px;
+  padding:15px;
+  border-radius:15px;
+  background:#111;
+  color:#fff;
+  word-break:break-all;
 }
 
-.colors{
-    display:flex;
-    gap:20px;
-    flex-wrap:wrap;
-    margin-top:20px;
-}
-
-.colorBox{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-}
-
-.effects{
-    margin-top:20px;
-    display:flex;
-    gap:20px;
-    flex-wrap:wrap;
-}
-
-.buttons{
-    margin-top:25px;
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
 }
 </style>
 
 </head>
 <body>
 
-<div class="glow"></div>
-
 <div class="container">
-
 <div class="card generator">
 
-<h1>🎨 Farbcode Generator</h1>
+<h1>🎨 Color Code Generator</h1>
 
-<input
-id="text"
-type="text"
-placeholder="Text eingeben"
-style="
-width:100%;
-padding:12px;
-border-radius:12px;
-border:none;
-font-size:16px;
-">
+<input id="text" placeholder="Text eingeben" style="width:100%;padding:12px;border-radius:10px;border:none;">
 
-<div class="colors">
+<br><br>
 
-<div class="colorBox">
 <label>Farbe 1</label>
-<input type="color" id="color1" value="#3996F9">
-<input type="text" id="hex1" value="#3996F9">
-</div>
+<input type="color" id="c1" value="#24ABFF">
 
-<div class="colorBox">
 <label>Farbe 2</label>
-<input type="color" id="color2" value="#00D4FF">
-<input type="text" id="hex2" value="#00D4FF">
+<input type="color" id="c2" value="#0FFF5B">
+
+<br><br>
+
+<label><input type="checkbox" id="gradient" checked> Verlauf</label>
+
+<br><br>
+
+<!-- EFFECTS -->
+<div class="row">
+<label><input type="checkbox" id="bold"> Fett</label>
+<label><input type="checkbox" id="italic"> Kursiv</label>
+<label><input type="checkbox" id="underline"> Unterstrichen</label>
+<label><input type="checkbox" id="strike"> Durchgestrichen</label>
 </div>
 
-</div>
+<div id="preview" class="preview">Preview</div>
+
+<div id="output" class="output"></div>
 
 <br>
 
-<label>
-<input type="checkbox" id="gradient" checked>
-Farbverlauf benutzen
-</label>
-
-<div class="effects">
-
-<label>
-<input type="checkbox" id="bold">
-Fett
-</label>
-
-<label>
-<input type="checkbox" id="italic">
-Kursiv
-</label>
-
-<label>
-<input type="checkbox" id="underline">
-Unterstrichen
-</label>
-
-<label>
-<input type="checkbox" id="strike">
-Durchgestrichen
-</label>
-
-</div>
-
-<div id="preview" class="preview">
-Vorschau
-</div>
-
-<div id="output" class="output">
-Code erscheint hier
-</div>
-
-<div class="buttons">
-
-<button onclick="generate()">
-Generieren
-</button>
-
-<button onclick="copyCode()">
-Code kopieren
-</button>
-
-<button onclick="copyLink()">
-Link kopieren
-</button>
-
-<button onclick="location.href='index.html'">
-Zurück
-</button>
-
-</div>
+<button onclick="generate()">Generate</button>
+<button onclick="copy()">Copy</button>
+<button onclick="location.href='index.html'">Back</button>
 
 </div>
 </div>
 
 <script>
 
-function lerp(a,b,t){
-    return Math.round(a+(b-a)*t);
-}
-
 function hexToRgb(hex){
-    hex = hex.replace("#","");
-
-    return{
-        r:parseInt(hex.substring(0,2),16),
-        g:parseInt(hex.substring(2,4),16),
-        b:parseInt(hex.substring(4,6),16)
-    };
+hex = hex.replace("#","");
+return {
+r:parseInt(hex.substring(0,2),16),
+g:parseInt(hex.substring(2,4),16),
+b:parseInt(hex.substring(4,6),16)
+};
 }
 
 function rgbToHex(r,g,b){
-    return "#"+
-    r.toString(16).padStart(2,"0")+
-    g.toString(16).padStart(2,"0")+
-    b.toString(16).padStart(2,"0");
+return "#" + ((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
 }
 
 function generate(){
 
-    const text =
-    document.getElementById("text").value;
+const text = document.getElementById("text").value;
+const preview = document.getElementById("preview");
+const output = document.getElementById("output");
 
-    const preview =
-    document.getElementById("preview");
+const c1 = document.getElementById("c1").value;
+const c2 = document.getElementById("c2").value;
 
-    const output =
-    document.getElementById("output");
+const grad = document.getElementById("gradient").checked;
 
-    const c1 =
-    document.getElementById("hex1").value;
+preview.innerHTML = "";
+output.innerText = "";
 
-    const c2 =
-    document.getElementById("hex2").value;
+let format = "";
 
-    const gradient =
-    document.getElementById("gradient").checked;
+if(document.getElementById("bold").checked) format += "&l";
+if(document.getElementById("italic").checked) format += "&o";
+if(document.getElementById("underline").checked) format += "&n";
+if(document.getElementById("strike").checked) format += "&m";
 
-    preview.innerHTML = "";
+if(!grad){
 
-    if(!text){
-        output.innerText = "";
-        return;
-    }
+preview.innerHTML =
+`<span style="color:${c1}">${text}</span>`;
 
-    let code = "";
+output.innerText =
+`&${c1.replace("#","")}&${format}${text}`;
 
-    if(
-        document.getElementById("bold").checked
-    ){
-        code += "&l";
-    }
-
-    if(
-        document.getElementById("italic").checked
-    ){
-        code += "&o";
-    }
-
-    if(
-        document.getElementById("underline").checked
-    ){
-        code += "&n";
-    }
-
-    if(
-        document.getElementById("strike").checked
-    ){
-        code += "&m";
-    }
-
-    if(!gradient){
-
-        preview.innerHTML =
-        `<span style="color:${c1}">
-        ${text}
-        </span>`;
-
-        output.innerText =
-        code +
-        "&#" +
-        c1.replace("#","") +
-        text;
-
-        return;
-    }
-
-    const rgb1 = hexToRgb(c1);
-    const rgb2 = hexToRgb(c2);
-
-    for(
-        let i=0;
-        i<text.length;
-        i++
-    ){
-
-        const t =
-        i/(text.length-1||1);
-
-        const r =
-        lerp(rgb1.r,rgb2.r,t);
-
-        const g =
-        lerp(rgb1.g,rgb2.g,t);
-
-        const b =
-        lerp(rgb1.b,rgb2.b,t);
-
-        const hex =
-        rgbToHex(r,g,b);
-
-        const span =
-        document.createElement("span");
-
-        span.style.color = hex;
-        span.textContent = text[i];
-
-        preview.appendChild(span);
-
-        code +=
-        "&#"+
-        hex.replace("#","")+
-        text[i];
-    }
-
-    output.innerText = code;
+return;
 }
 
-function copyCode(){
+const rgb1 = hexToRgb(c1);
+const rgb2 = hexToRgb(c2);
 
-    navigator.clipboard.writeText(
-        document.getElementById("output")
-        .innerText
-    );
+let result = "";
+
+for(let i=0;i<text.length;i++){
+
+const t = i/(text.length-1||1);
+
+const r = Math.round(rgb1.r + (rgb2.r-rgb1.r)*t);
+const g = Math.round(rgb1.g + (rgb2.g-rgb1.g)*t);
+const b = Math.round(rgb1.b + (rgb2.b-rgb1.b)*t);
+
+const hex = rgbToHex(r,g,b);
+
+preview.innerHTML += `<span style="color:${hex}">${text[i]}</span>`;
+
+result += `&#${hex.replace("#","")}${format}${text[i]}`;
 }
 
-function copyLink(){
-
-    const text =
-    encodeURIComponent(
-        document.getElementById("text").value
-    );
-
-    navigator.clipboard.writeText(
-        location.href +
-        "?text=" +
-        text
-    );
+output.innerText = result;
 }
 
-document.getElementById("text")
-.addEventListener(
-    "input",
-    generate
-);
+function copy(){
+navigator.clipboard.writeText(document.getElementById("output").innerText);
+}
 
-document.getElementById("color1")
-.oninput = e => {
+document.getElementById("text").addEventListener("input", generate);
+document.getElementById("c1").addEventListener("input", generate);
+document.getElementById("c2").addEventListener("input", generate);
+document.getElementById("gradient").addEventListener("change", generate);
 
-    hex1.value =
-    e.target.value;
-
-    generate();
-};
-
-document.getElementById("color2")
-.oninput = e => {
-
-    hex2.value =
-    e.target.value;
-
-    generate();
-};
-
-document.getElementById("hex1")
-.oninput = generate;
-
-document.getElementById("hex2")
-.oninput = generate;
-
-document.getElementById("gradient")
-.onchange = generate;
-
-document.getElementById("bold")
-.onchange = generate;
-
-document.getElementById("italic")
-.onchange = generate;
-
-document.getElementById("underline")
-.onchange = generate;
-
-document.getElementById("strike")
-.onchange = generate;
+document.getElementById("bold").addEventListener("change", generate);
+document.getElementById("italic").addEventListener("change", generate);
+document.getElementById("underline").addEventListener("change", generate);
+document.getElementById("strike").addEventListener("change", generate);
 
 generate();
 
@@ -375,4 +180,3 @@ generate();
 
 </body>
 </html>
-```
