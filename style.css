@@ -14,7 +14,6 @@ html, body {
   --accent: #3996F9;
 }
 
-/* BODY */
 body {
   min-height: 100vh;
   font-family: Arial, sans-serif;
@@ -43,7 +42,7 @@ body {
   pointer-events: none;
 }
 
-/* 🔥 GLOBAL CENTER FIX (WICHTIG) */
+/* CENTER FIX */
 .container {
   min-height: 100vh;
   width: 100%;
@@ -77,7 +76,7 @@ body {
               0 0 30px var(--accent);
 }
 
-/* BUTTONS */
+/* BUTTON */
 button {
   margin: 10px;
   padding: 12px 18px;
@@ -141,4 +140,23 @@ button:hover {
 
 .settings.show {
   display: block;
+}
+
+/* COLOR PREVIEW FIX */
+.preview {
+  margin-top: 20px;
+  padding: 20px;
+
+  border-radius: 20px;
+
+  background: rgba(255,255,255,0.06);
+
+  min-height: 60px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 28px;
+  font-weight: bold;
 }
