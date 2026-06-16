@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Main Website</title>
+
+<style>
+body {
+  margin:0;
+  font-family:Arial, sans-serif;
+  background: radial-gradient(circle at top, #0f1720, #070a0f);
+  color:white;
+  overflow:hidden;
+}
+
+/* BLUE GLOW */
+.glow {
+  position:absolute;
+  width:600px;
+  height:600px;
+  background:#3996F9;
+  opacity:0.25;
+  filter:blur(140px);
+  border-radius:50%;
+  top:-180px;
+  left:-180px;
+}
+
+/* CENTER */
+.container {
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+/* TITLE */
+h1 {
+  font-size:42px;
+  margin-bottom:40px;
+  text-shadow:0 0 20px rgba(57,150,249,0.6);
+}
+
+/* BUTTON GRID */
+.grid {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:20px;
+}
+
+/* BUTTONS */
+.btn {
+  width:180px;
+  padding:18px 20px;
+  border-radius:18px;
+
+  background: rgba(255,255,255,0.06);
+  border:1px solid rgba(57,150,249,0.3);
+
+  backdrop-filter: blur(15px);
+
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+
+  transition:0.3s;
+  box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+.btn:hover {
+  transform:scale(1.05);
+  box-shadow:0 0 25px rgba(57,150,249,0.6);
+  border-color:#3996F9;
+}
+
+/* FOOTER TEXT */
+.small {
+  margin-top:40px;
+  opacity:0.6;
+  font-size:12px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="glow"></div>
+
+<div class="container">
+
+  <h1>Main Website</h1>
+
+  <div class="grid">
+
+    <button class="btn" onclick="location.href='terms.html'">Terms</button>
+    <button class="btn" onclick="location.href='privacy.html'">Privacy</button>
+    <button class="btn" onclick="location.href='info.html'">Infos</button>
+    <button class="btn" onclick="location.href='contact.html'">Contacts</button>
+    <button class="btn" onclick="window.open('https://discord.gg/DEINLINK')">Discord Server</button>
+    <button class="btn" onclick="window.open('https://discord.com/oauth2/authorize?client_id=BOT_ID&scope=bot')">Discord Bot</button>
+
+  </div>
+
+  <div class="small">
+    Glass UI • Blue Glow • Main Hub
+  </div>
+
+</div>
+
+</body>
+</html>
