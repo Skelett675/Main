@@ -15,10 +15,10 @@
 
     <h1>QR Generator</h1>
 
-    <input id="text" placeholder="Text oder Link eingeben"
+    <input id="text" placeholder="Text oder Link"
       style="width:100%;padding:10px;border-radius:10px;border:none;margin-bottom:10px;">
 
-    <div id="dropzone">Bild hier reinziehen</div>
+    <div id="dropzone">Bild hier reinziehen (Logo optional)</div>
     <input type="file" id="file" hidden>
 
     <button onclick="generate()">QR erstellen</button>
@@ -37,24 +37,16 @@ let logo = null;
 
 const dropzone = document.getElementById("dropzone");
 
-dropzone.style.padding = "20px";
-dropzone.style.border = "2px dashed var(--accent)";
-dropzone.style.borderRadius = "15px";
-dropzone.style.margin = "10px 0";
-dropzone.style.cursor = "pointer";
+dropzone.onclick = () => document.getElementById("file").click();
 
 dropzone.ondragover = e => {
   e.preventDefault();
-  dropzone.style.boxShadow = "0 0 20px var(--accent)";
 };
 
 dropzone.ondrop = e => {
   e.preventDefault();
-  const file = e.dataTransfer.files[0];
-  handleFile(file);
+  handleFile(e.dataTransfer.files[0]);
 };
-
-dropzone.onclick = () => document.getElementById("file").click();
 
 document.getElementById("file").onchange = e => {
   handleFile(e.target.files[0]);
@@ -78,21 +70,13 @@ function generate() {
   const canvas = document.createElement("canvas");
 
   QRCode.toCanvas(canvas, text, {
-    width: 250,
-    margin: 2,
-    color: {
-      dark: "#000",
-      light: "#fff"
-    }
-  }, function (error) {
-    if (error) console.error(error);
+    width: 260,
+    margin: 2
+  }, function () {
 
-    // Rund machen
     canvas.style.borderRadius = "20px";
-
     qrDiv.appendChild(canvas);
 
-    // Logo in Mitte
     if (logo) {
       const img = document.createElement("img");
       img.src = logo;
