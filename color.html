@@ -1,80 +1,22 @@
-/* =========================
-   RESET / FIX WHITE BORDER
-========================= */
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Color Generator FIX</title>
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+<link rel="stylesheet" href="style.css">
 
-html, body {
-  width: 100%;
-  height: 100%;
-}
-
-/* =========================
-   ROOT COLORS
-========================= */
-
-:root {
-  --accent: #3996F9;
-}
-
-/* =========================
-   BODY BACKGROUND
-========================= */
-
-body {
-  min-height: 100vh;
-  font-family: Arial, sans-serif;
-
-  background: radial-gradient(circle at top, #1a1c20, #0c0d10);
-  color: white;
-
-  overflow-x: hidden;
-}
-
-/* =========================
-   GLOW EFFECT
-========================= */
-
-.glow {
-  position: fixed;
-  width: 500px;
-  height: 500px;
-
-  background: var(--accent);
-  opacity: 0.25;
-
-  filter: blur(130px);
-  border-radius: 50%;
-
-  top: -150px;
-  left: -150px;
-
-  pointer-events: none;
-
-  transition: background 0.4s ease;
-}
-
-/* =========================
-   MAIN LAYOUT
-========================= */
-
+<style>
 .container {
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-/* =========================
-   GLASS CARD
-========================= */
-
 .card {
-  padding: 40px;
+  width: 450px;
+  padding: 35px;
   border-radius: 28px;
 
   background: rgba(255,255,255,0.06);
@@ -82,237 +24,199 @@ body {
 
   border: 1px solid rgba(255,255,255,0.1);
 
-  box-shadow:
-    0 10px 40px rgba(0,0,0,0.7);
-
-  text-align: center;
-
-  transition: 0.3s ease;
+  text-align:center;
 }
 
-.card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow:
-    0 20px 60px rgba(0,0,0,0.8),
-    0 0 30px var(--accent);
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-button {
-  margin: 10px;
-  padding: 12px 18px;
-
-  border: none;
-  border-radius: 16px;
-
-  background: var(--accent);
-  color: black;
-
-  font-weight: bold;
-  cursor: pointer;
-
-  transition: 0.25s ease;
-}
-
-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px var(--accent);
-}
-
-/* =========================
-   SETTINGS BUTTON (GEAR)
-========================= */
-
-.gear {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-
-  width: 55px;
-  height: 55px;
-
-  border-radius: 18px;
-  border: none;
-
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(20px);
-
-  color: white;
-  font-size: 24px;
-
-  cursor: pointer;
-
-  z-index: 1000;
-
-  transition: 0.3s ease;
-}
-
-.gear:hover {
-  transform: rotate(90deg) scale(1.1);
-  box-shadow: 0 0 20px var(--accent);
-}
-
-/* =========================
-   SETTINGS PANEL
-========================= */
-
-.settings {
-  position: fixed;
-  top: 85px;
-  right: 20px;
-
-  width: 300px;
-
-  padding: 20px;
-
-  border-radius: 25px;
-
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(25px);
-
-  border: 1px solid rgba(255,255,255,0.1);
-
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-
-  opacity: 0;
-  transform: translateY(-15px) scale(0.95);
-
-  pointer-events: none;
-
-  transition: 0.3s ease;
-
-  z-index: 999;
-}
-
-.settings.show {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-}
-
-.settings h3 {
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-.settings select {
+input, select {
   width: 100%;
   padding: 12px;
-
-  border-radius: 14px;
-  border: none;
-
-  background: #111;
-  color: white;
-
-  outline: none;
-}
-
-/* =========================
-   INPUTS (COLOR PAGE SAFE)
-========================= */
-
-input {
-  font-family: inherit;
-}
-
-input[type="text"] {
-  width: 100%;
-  padding: 12px;
-
-  border-radius: 14px;
-  border: none;
-
-  background: #111;
-  color: white;
-
   margin-top: 10px;
-}
 
-input[type="color"] {
-  width: 60px;
-  height: 40px;
-
-  border-radius: 12px;
+  border-radius: 14px;
   border: none;
 
-  background: none;
-  cursor: pointer;
+  background: rgba(0,0,0,0.4);
+  color: white;
 }
-
-/* =========================
-   PREVIEW BOX
-========================= */
 
 .preview {
-  margin-top: 20px;
-  padding: 25px;
+  margin-top: 15px;
+  padding: 20px;
 
-  border-radius: 25px;
+  border-radius: 20px;
+  min-height: 70px;
 
   background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(20px);
 
-  font-size: 32px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  font-size: 26px;
   font-weight: bold;
 
-  min-height: 80px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  box-shadow: 0 0 25px rgba(57,150,249,0.2);
+  word-break: break-word;
 }
 
-/* =========================
-   OUTPUT BOX
-========================= */
-
-.output {
-  margin-top: 15px;
+.code {
+  margin-top: 10px;
   padding: 15px;
 
   border-radius: 16px;
 
   background: #111;
+  color: #0f0;
+
+  font-family: monospace;
 
   word-break: break-word;
 }
 
-/* =========================
-   ROW OPTIONS
-========================= */
+button {
+  margin-top: 10px;
+  width: 100%;
 
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-
-  margin-top: 15px;
-}
-
-.row label {
-  background: rgba(255,255,255,0.06);
-  padding: 10px 14px;
+  padding: 12px;
 
   border-radius: 14px;
+  border: none;
 
-  backdrop-filter: blur(10px);
+  background: #3996F9;
+  color: black;
 
+  font-weight: bold;
   cursor: pointer;
 }
 
-/* =========================
-   SMALL TEXT
-========================= */
-
-.small {
-  font-size: 12px;
-  opacity: 0.7;
-  margin-top: 10px;
+.color-box {
+  display:flex;
+  gap:10px;
+  margin-top:10px;
 }
+</style>
+
+</head>
+
+<body>
+
+<div class="glow"></div>
+
+<div class="container">
+  <div class="card">
+
+    <h2>Color Generator</h2>
+
+    <input type="text" id="text" placeholder="Text eingeben" oninput="update()">
+
+    <select id="mode" onchange="update()">
+      <option value="single">Einfarbig</option>
+      <option value="gradient">Gradient</option>
+      <option value="rainbow">Rainbow</option>
+    </select>
+
+    <!-- COLORS -->
+    <div id="colors"></div>
+
+    <button onclick="addColor()">+ Farbe hinzufügen</button>
+
+    <!-- PREVIEW (SICHER SICHTBAR) -->
+    <div class="preview" id="preview">Preview</div>
+
+    <!-- CODE OUTPUT -->
+    <div class="code" id="code">Code erscheint hier</div>
+
+    <button onclick="copyCode()">Copy Code</button>
+
+  </div>
+</div>
+
+<script>
+
+function addColor(val="#3996F9"){
+  const div = document.createElement("div");
+  div.className = "color-box";
+
+  div.innerHTML = `<input type="color" value="${val}" oninput="update()">`;
+
+  document.getElementById("colors").appendChild(div);
+}
+
+function getColors(){
+  return [...document.querySelectorAll(".color-box input")]
+    .map(i => i.value);
+}
+
+/* 🔥 MAIN FIX */
+function update(){
+
+  const text = document.getElementById("text").value || "Preview";
+  const mode = document.getElementById("mode").value;
+
+  const preview = document.getElementById("preview");
+  const code = document.getElementById("code");
+
+  const colors = getColors();
+
+  preview.innerText = text;
+
+  /* RESET */
+  preview.style.background = "";
+  preview.style.webkitBackgroundClip = "";
+  preview.style.color = "white";
+  preview.style.textShadow = "none";
+
+  let output = "";
+
+  /* SINGLE */
+  if(mode === "single"){
+    let c = colors[0] || "#3996F9";
+
+    preview.style.color = c;
+    preview.style.textShadow = "0 0 15px " + c;
+
+    output = `&#${c.replace("#","")}${text}`;
+  }
+
+  /* GRADIENT */
+  if(mode === "gradient"){
+    preview.style.background = `linear-gradient(90deg, ${colors.join(",")})`;
+    preview.style.webkitBackgroundClip = "text";
+    preview.style.color = "transparent";
+
+    for(let i=0;i<text.length;i++){
+      let c = colors[i % colors.length] || "#fff";
+      output += `&#${c.replace("#","")}${text[i]}`;
+    }
+  }
+
+  /* RAINBOW */
+  if(mode === "rainbow"){
+    const r = ["#ff0000","#ff9900","#ffff00","#00ff00","#00ffff","#0000ff","#ff00ff"];
+
+    preview.style.background = `linear-gradient(90deg, ${r.join(",")})`;
+    preview.style.webkitBackgroundClip = "text";
+    preview.style.color = "transparent";
+
+    for(let i=0;i<text.length;i++){
+      output += `&#${r[i%r.length].replace("#","")}${text[i]}`;
+    }
+  }
+
+  code.innerText = output;
+}
+
+/* COPY */
+function copyCode(){
+  navigator.clipboard.writeText(document.getElementById("code").innerText);
+}
+
+/* START */
+window.onload = () => {
+  addColor("#3996F9");
+  update();
+};
+
+</script>
+
+</body>
+</html>
