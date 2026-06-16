@@ -2,96 +2,112 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Color Generator FIX</title>
+<title>Minecraft Color Generator</title>
 
 <link rel="stylesheet" href="style.css">
 
 <style>
-.container {
-  min-height: 100vh;
+.container{
+  min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
 }
 
-.card {
-  width: 450px;
-  padding: 35px;
-  border-radius: 28px;
-
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(25px);
-
-  border: 1px solid rgba(255,255,255,0.1);
-
+.card{
+  width:480px;
+  padding:35px;
+  border-radius:30px;
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(25px);
   text-align:center;
 }
 
-input, select {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-
-  border-radius: 14px;
-  border: none;
-
-  background: rgba(0,0,0,0.4);
-  color: white;
+/* INPUTS */
+input,select{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:14px;
+  border:none;
+  background:rgba(0,0,0,0.4);
+  color:white;
 }
 
-.preview {
-  margin-top: 15px;
-  padding: 20px;
+/* COLORS */
+.colors{
+  margin-top:10px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
 
-  border-radius: 20px;
-  min-height: 70px;
+.color-box{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  background:rgba(255,255,255,0.08);
+  padding:10px;
+  border-radius:14px;
+}
 
-  background: rgba(255,255,255,0.06);
+.color-box input[type=color]{
+  width:45px;
+  height:45px;
+  border-radius:8px;
+  border:none;
+}
 
+/* STYLE ROW (NEBENEINANDER) */
+.style-row{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.style-row label{
+  background:rgba(255,255,255,0.08);
+  padding:8px 12px;
+  border-radius:12px;
+}
+
+/* PREVIEW */
+.preview{
+  margin-top:20px;
+  padding:20px;
+  border-radius:25px;
+  background:rgba(255,255,255,0.06);
+  min-height:80px;
   display:flex;
   justify-content:center;
   align-items:center;
-
-  font-size: 26px;
-  font-weight: bold;
-
-  word-break: break-word;
+  font-size:26px;
+  font-weight:bold;
 }
 
-.code {
-  margin-top: 10px;
-  padding: 15px;
-
-  border-radius: 16px;
-
-  background: #111;
-  color: #0f0;
-
-  font-family: monospace;
-
-  word-break: break-word;
-}
-
-button {
-  margin-top: 10px;
-  width: 100%;
-
-  padding: 12px;
-
-  border-radius: 14px;
-  border: none;
-
-  background: #3996F9;
-  color: black;
-
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.color-box {
-  display:flex;
-  gap:10px;
+/* CODE */
+.code{
   margin-top:10px;
+  padding:15px;
+  border-radius:16px;
+  background:#111;
+  color:#0f0;
+  font-family:monospace;
+  word-break:break-word;
+}
+
+/* BUTTON */
+button{
+  margin-top:10px;
+  width:100%;
+  padding:12px;
+  border-radius:16px;
+  border:none;
+  background:#3996F9;
+  color:black;
+  font-weight:bold;
 }
 </style>
 
@@ -104,9 +120,9 @@ button {
 <div class="container">
   <div class="card">
 
-    <h2>Color Generator</h2>
+    <h2>Minecraft Generator</h2>
 
-    <input type="text" id="text" placeholder="Text eingeben" oninput="update()">
+    <input type="text" id="text" placeholder="Text" oninput="update()">
 
     <select id="mode" onchange="update()">
       <option value="single">Einfarbig</option>
@@ -114,18 +130,23 @@ button {
       <option value="rainbow">Rainbow</option>
     </select>
 
+    <!-- 🔥 STYLE -->
+    <div class="style-row">
+      <label><input type="checkbox" id="bold" onchange="update()"> Fett</label>
+      <label><input type="checkbox" id="italic" onchange="update()"> Kursiv</label>
+      <label><input type="checkbox" id="underline" onchange="update()"> Unter</label>
+      <label><input type="checkbox" id="strike" onchange="update()"> Durch</label>
+    </div>
+
     <!-- COLORS -->
-    <div id="colors"></div>
+    <div class="colors" id="colors"></div>
 
     <button onclick="addColor()">+ Farbe hinzufügen</button>
 
-    <!-- PREVIEW (SICHER SICHTBAR) -->
     <div class="preview" id="preview">Preview</div>
+    <div class="code" id="code">Code</div>
 
-    <!-- CODE OUTPUT -->
-    <div class="code" id="code">Code erscheint hier</div>
-
-    <button onclick="copyCode()">Copy Code</button>
+    <button onclick="copyCode()">Copy</button>
 
   </div>
 </div>
@@ -133,85 +154,80 @@ button {
 <script>
 
 function addColor(val="#3996F9"){
-  const div = document.createElement("div");
-  div.className = "color-box";
-
-  div.innerHTML = `<input type="color" value="${val}" oninput="update()">`;
-
+  const div=document.createElement("div");
+  div.className="color-box";
+  div.innerHTML=`<input type="color" value="${val}" oninput="update()">`;
   document.getElementById("colors").appendChild(div);
 }
 
 function getColors(){
-  return [...document.querySelectorAll(".color-box input")]
-    .map(i => i.value);
+  return [...document.querySelectorAll(".color-box input")].map(i=>i.value);
 }
 
-/* 🔥 MAIN FIX */
+function prefix(){
+  let p="";
+  if(bold.checked) p+="&l";
+  if(italic.checked) p+="&o";
+  if(underline.checked) p+="&n";
+  if(strike.checked) p+="&m";
+  return p;
+}
+
 function update(){
 
-  const text = document.getElementById("text").value || "Preview";
-  const mode = document.getElementById("mode").value;
+  const text=document.getElementById("text").value||"Preview";
+  const mode=document.getElementById("mode").value;
 
-  const preview = document.getElementById("preview");
-  const code = document.getElementById("code");
+  const colors=getColors();
+  const preview=document.getElementById("preview");
+  const code=document.getElementById("code");
 
-  const colors = getColors();
+  preview.innerText=text;
 
-  preview.innerText = text;
+  preview.style.background="";
+  preview.style.color="white";
+  preview.style.textShadow="none";
 
-  /* RESET */
-  preview.style.background = "";
-  preview.style.webkitBackgroundClip = "";
-  preview.style.color = "white";
-  preview.style.textShadow = "none";
+  let out="";
+  let p=prefix();
 
-  let output = "";
-
-  /* SINGLE */
-  if(mode === "single"){
-    let c = colors[0] || "#3996F9";
-
-    preview.style.color = c;
-    preview.style.textShadow = "0 0 15px " + c;
-
-    output = `&#${c.replace("#","")}${text}`;
+  if(mode==="single"){
+    let c=colors[0]||"#3996F9";
+    preview.style.color=c;
+    preview.style.textShadow="0 0 15px "+c;
+    out=`&#${c.replace("#","")}${p}${text}`;
   }
 
-  /* GRADIENT */
-  if(mode === "gradient"){
-    preview.style.background = `linear-gradient(90deg, ${colors.join(",")})`;
-    preview.style.webkitBackgroundClip = "text";
-    preview.style.color = "transparent";
+  if(mode==="gradient"){
+    preview.style.background=`linear-gradient(90deg, ${colors.join(",")})`;
+    preview.style.webkitBackgroundClip="text";
+    preview.style.color="transparent";
 
     for(let i=0;i<text.length;i++){
-      let c = colors[i % colors.length] || "#fff";
-      output += `&#${c.replace("#","")}${text[i]}`;
+      out+=`&#${colors[i%colors.length].replace("#","")}${p}${text[i]}`;
     }
   }
 
-  /* RAINBOW */
-  if(mode === "rainbow"){
-    const r = ["#ff0000","#ff9900","#ffff00","#00ff00","#00ffff","#0000ff","#ff00ff"];
+  if(mode==="rainbow"){
+    let r=["#ff0000","#ff9900","#ffff00","#00ff00","#00ffff","#0000ff","#ff00ff"];
 
-    preview.style.background = `linear-gradient(90deg, ${r.join(",")})`;
-    preview.style.webkitBackgroundClip = "text";
-    preview.style.color = "transparent";
+    preview.style.background=`linear-gradient(90deg, ${r.join(",")})`;
+    preview.style.webkitBackgroundClip="text";
+    preview.style.color="transparent";
 
     for(let i=0;i<text.length;i++){
-      output += `&#${r[i%r.length].replace("#","")}${text[i]}`;
+      out+=`&#${r[i%r.length].replace("#","")}${p}${text[i]}`;
     }
   }
 
-  code.innerText = output;
+  code.innerText=out;
 }
 
-/* COPY */
 function copyCode(){
-  navigator.clipboard.writeText(document.getElementById("code").innerText);
+  navigator.clipboard.writeText(code.innerText);
 }
 
-/* START */
-window.onload = () => {
+window.onload=()=>{
   addColor("#3996F9");
   update();
 };
