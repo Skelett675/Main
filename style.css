@@ -1,25 +1,103 @@
-/* =========================
-   GLOW
-========================= */
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+/* ROOT */
+:root {
+  --accent: #3996F9;
+}
+
+/* BODY */
+body {
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+
+  background: radial-gradient(circle at top, #1a1c20, #0c0d10);
+  color: white;
+
+  overflow-x: hidden;
+}
+
+/* GLOW */
 .glow {
   position: fixed;
   width: 500px;
   height: 500px;
+
   background: var(--accent);
   opacity: 0.25;
+
   filter: blur(130px);
   border-radius: 50%;
+
   top: -150px;
   left: -150px;
+
   pointer-events: none;
-  transition: background 0.4s ease;
 }
 
-/* =========================
-   SETTINGS BUTTON
-========================= */
+/* CENTER */
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
+/* CARD */
+.card {
+  padding: 40px;
+  border-radius: 28px;
+
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(25px);
+
+  border: 1px solid rgba(255,255,255,0.1);
+
+  box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+
+  text-align: center;
+
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8),
+              0 0 30px var(--accent);
+}
+
+/* BUTTONS */
+button {
+  margin: 10px;
+  padding: 12px 18px;
+
+  border: none;
+  border-radius: 16px;
+
+  background: var(--accent);
+  color: black;
+
+  font-weight: bold;
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px var(--accent);
+}
+
+/* GEAR */
 .gear {
   position: fixed;
   top: 20px;
@@ -28,39 +106,23 @@
   width: 55px;
   height: 55px;
 
-  border: none;
   border-radius: 18px;
+  border: none;
 
   background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(20px);
-
   color: white;
-  font-size: 28px;
+
+  font-size: 24px;
 
   cursor: pointer;
-
-  z-index: 1001;
-
-  transition:
-    transform .3s ease,
-    box-shadow .3s ease,
-    background .3s ease;
+  z-index: 1000;
 }
 
 .gear:hover {
-  transform: rotate(90deg) scale(1.08);
-
-  background: rgba(255,255,255,0.12);
-
-  box-shadow:
-    0 0 20px var(--accent),
-    0 0 40px rgba(0,0,0,0.4);
+  transform: rotate(90deg) scale(1.1);
 }
 
-/* =========================
-   SETTINGS MENU
-========================= */
-
+/* SETTINGS */
 .settings {
   position: fixed;
   top: 85px;
@@ -68,140 +130,20 @@
 
   width: 300px;
 
+  padding: 20px;
+
+  border-radius: 25px;
+
   background: rgba(255,255,255,0.08);
   backdrop-filter: blur(25px);
 
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 25px;
 
-  padding: 22px;
+  display: none;
 
-  box-shadow:
-    0 20px 50px rgba(0,0,0,0.45);
-
-  z-index: 1000;
-
-  opacity: 0;
-  transform:
-    translateY(-20px)
-    scale(.95);
-
-  pointer-events: none;
-
-  transition:
-    opacity .35s ease,
-    transform .35s ease,
-    box-shadow .35s ease;
+  z-index: 999;
 }
 
 .settings.show {
-  opacity: 1;
-  transform:
-    translateY(0)
-    scale(1);
-
-  pointer-events: auto;
-}
-
-.settings h3 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.settings label {
   display: block;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.settings select {
-  width: 100%;
-  padding: 12px;
-
-  border: none;
-  border-radius: 15px;
-
-  background: rgba(255,255,255,0.08);
-  color: white;
-
-  outline: none;
-
-  font-size: 15px;
-
-  backdrop-filter: blur(10px);
-
-  transition: .3s;
-}
-
-.settings select:hover {
-  box-shadow: 0 0 15px var(--accent);
-}
-
-/* =========================
-   CARD
-========================= */
-
-.card {
-  padding: 45px;
-  border-radius: 28px;
-
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(20px);
-
-  border: 1px solid rgba(255,255,255,0.1);
-
-  box-shadow:
-    0 10px 40px rgba(0,0,0,0.7),
-    inset 0 0 20px rgba(255,255,255,0.05);
-
-  transform:
-    perspective(1000px)
-    rotateX(3deg);
-
-  transition: .4s;
-}
-
-.card:hover {
-  transform:
-    perspective(1000px)
-    rotateX(0deg)
-    scale(1.03);
-
-  box-shadow:
-    0 20px 60px rgba(0,0,0,0.8),
-    0 0 25px var(--accent);
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-button {
-  margin: 10px;
-  padding: 13px 22px;
-
-  border: none;
-  border-radius: 14px;
-
-  background: var(--accent);
-  color: black;
-
-  font-weight: bold;
-  font-size: 15px;
-
-  cursor: pointer;
-
-  transition:
-    transform .25s ease,
-    box-shadow .25s ease;
-}
-
-button:hover {
-  transform:
-    translateY(-3px)
-    scale(1.04);
-
-  box-shadow:
-    0 0 20px var(--accent);
 }
