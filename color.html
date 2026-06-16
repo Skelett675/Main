@@ -15,12 +15,13 @@
 }
 
 .card{
-  width:480px;
+  width:500px;
   padding:35px;
   border-radius:30px;
   background:rgba(255,255,255,0.06);
   backdrop-filter:blur(25px);
   text-align:center;
+  color:white;
 }
 
 input,select{
@@ -33,9 +34,10 @@ input,select{
   color:white;
 }
 
+/* PREVIEW */
 .preview{
   margin-top:20px;
-  padding:20px;
+  padding:25px;
   border-radius:25px;
   background:rgba(255,255,255,0.06);
   min-height:80px;
@@ -46,6 +48,7 @@ input,select{
   font-weight:bold;
 }
 
+/* OUTPUT */
 .code{
   margin-top:10px;
   padding:15px;
@@ -56,6 +59,22 @@ input,select{
   word-break:break-word;
 }
 
+/* ROW */
+.row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  margin-top:10px;
+}
+
+label{
+  background:rgba(255,255,255,0.08);
+  padding:8px 12px;
+  border-radius:12px;
+}
+
+/* BUTTON */
 button{
   margin-top:10px;
   width:100%;
@@ -88,14 +107,25 @@ button{
       <option value="rainbow">Rainbow</option>
     </select>
 
-    <!-- 🔥 INTENSITY -->
+    <!-- 🔥 STÄRKE -->
     <label>Farb-Stärke</label>
     <input type="range" id="strength" min="1" max="5" value="3" oninput="update()">
 
+    <!-- 🎨 FORMAT -->
+    <div class="row">
+      <label><input type="checkbox" id="bold" onchange="update()"> Fett</label>
+      <label><input type="checkbox" id="italic" onchange="update()"> Kursiv</label>
+      <label><input type="checkbox" id="underline" onchange="update()"> Unterstrichen</label>
+      <label><input type="checkbox" id="strike" onchange="update()"> Durchgestrichen</label>
+    </div>
+
+    <!-- PREVIEW -->
     <div class="preview" id="preview">Preview</div>
+
+    <!-- CODE -->
     <div class="code" id="code">Code</div>
 
-    <button onclick="copyCode()">Copy</button>
+    <button onclick="copy()">Copy</button>
 
   </div>
 </div>
@@ -125,25 +155,30 @@ function update(){
   const preview = document.getElementById("preview");
   const code = document.getElementById("code");
 
+  const bold = document.getElementById("bold").checked ? "&l" : "";
+  const italic = document.getElementById("italic").checked ? "&o" : "";
+  const underline = document.getElementById("underline").checked ? "&n" : "";
+  const strike = document.getElementById("strike").checked ? "&m" : "";
+
+  let format = bold + italic + underline + strike;
+
   let out = "";
 
   preview.innerText = text;
-
   preview.style.background = "";
+  preview.style.webkitBackgroundClip = "unset";
   preview.style.color = "white";
 
   if(mode === "single"){
 
     preview.style.color = "#3996F9";
-    preview.style.textShadow = "0 0 15px #3996F9";
 
-    out = `&#3996F9${text}`;
+    out = `&#3996F9${format}${text}`;
   }
 
   if(mode === "gradient"){
 
     const colors = ["#3996F9","#00ffcc","#ff4dff","#ffff00"];
-
     const factor = 1 + (strength * 0.3);
 
     let boosted = colors.map(c => boostColor(c,factor));
@@ -153,14 +188,13 @@ function update(){
     preview.style.color = "transparent";
 
     for(let i=0;i<text.length;i++){
-      out += `&#${colors[i % colors.length].replace("#","")}${text[i]}`;
+      out += `&#${colors[i % colors.length].replace("#","")}${format}${text[i]}`;
     }
   }
 
   if(mode === "rainbow"){
 
     const base = ["#ff0000","#ff7a00","#ffee00","#00ff4c","#00e5ff","#004cff","#b300ff"];
-
     const factor = 1 + (strength * 0.3);
 
     let boosted = base.map(c => boostColor(c,factor));
@@ -170,14 +204,14 @@ function update(){
     preview.style.color = "transparent";
 
     for(let i=0;i<text.length;i++){
-      out += `&#${base[i % base.length].replace("#","")}${text[i]}`;
+      out += `&#${base[i % base.length].replace("#","")}${format}${text[i]}`;
     }
   }
 
   code.innerText = out;
 }
 
-function copyCode(){
+function copy(){
   navigator.clipboard.writeText(document.getElementById("code").innerText);
 }
 
