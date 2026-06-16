@@ -9,10 +9,12 @@ html, body {
   height: 100%;
 }
 
+/* ROOT */
 :root {
   --accent: #3996F9;
 }
 
+/* BODY */
 body {
   min-height: 100vh;
   font-family: Arial, sans-serif;
@@ -23,26 +25,33 @@ body {
   overflow-x: hidden;
 }
 
-/* GLASS GLOW */
+/* GLOW */
 .glow {
   position: fixed;
   width: 500px;
   height: 500px;
+
   background: var(--accent);
   opacity: 0.25;
+
   filter: blur(130px);
   border-radius: 50%;
+
   top: -150px;
   left: -150px;
+
   pointer-events: none;
 }
 
-/* CENTER */
+/* 🔥 GLOBAL CENTER FIX (WICHTIG) */
 .container {
   min-height: 100vh;
+  width: 100%;
+
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 /* CARD */
@@ -110,7 +119,7 @@ button:hover {
   cursor: pointer;
 }
 
-/* SETTINGS PANEL */
+/* SETTINGS */
 .settings {
   position: fixed;
   top: 85px;
