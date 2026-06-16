@@ -13,30 +13,35 @@
 
 <div class="glow"></div>
 
-<!-- Zahnrad -->
+<!-- SETTINGS BUTTON -->
 <button class="gear" onclick="toggleSettings()">
 ⚙
 </button>
 
-<!-- Einstellungen -->
+<!-- SETTINGS MENU -->
 <div class="settings" id="settings">
 
   <h3>Einstellungen</h3>
 
-  <label for="themeSelect">Farbe</label>
+  <label for="themeSelect">
+    Farbe
+  </label>
 
-  <select id="themeSelect" onchange="setTheme(this.value)">
+  <select id="themeSelect"
+          onchange="setTheme(this.value)">
+
     <option value="blue">Blau</option>
     <option value="gray">Grau</option>
     <option value="purple">Lila</option>
     <option value="red">Rot</option>
     <option value="green">Grün</option>
     <option value="orange">Orange</option>
+
   </select>
 
 </div>
 
-<!-- Hauptbereich -->
+<!-- MAIN -->
 <div class="container">
 
   <div class="card">
@@ -44,7 +49,7 @@
     <h1>Main Website</h1>
 
     <p>
-      Willkommen auf der Hauptseite.
+      Willkommen
     </p>
 
     <button onclick="location.href='info.html'">
@@ -76,23 +81,21 @@
 </div>
 
 <script>
+
 function toggleSettings() {
-  const s = document.getElementById("settings");
-
-  if (!s) return;
-
-  if (s.style.display === "block") {
-    s.style.display = "none";
-  } else {
-    s.style.display = "block";
-  }
+  document
+    .getElementById("settings")
+    .classList
+    .toggle("show");
 }
 
 function setTheme(theme) {
-  document.documentElement.setAttribute(
-    "data-theme",
-    theme
-  );
+
+  document.documentElement
+    .setAttribute(
+      "data-theme",
+      theme
+    );
 
   localStorage.setItem(
     "theme",
@@ -101,23 +104,31 @@ function setTheme(theme) {
 }
 
 window.onload = () => {
-  const theme =
-    localStorage.getItem("theme");
 
-  if (theme) {
-    document.documentElement.setAttribute(
-      "data-theme",
-      theme
+  const theme =
+    localStorage.getItem(
+      "theme"
     );
 
+  if (theme) {
+
+    document.documentElement
+      .setAttribute(
+        "data-theme",
+        theme
+      );
+
     const select =
-      document.getElementById("themeSelect");
+      document.getElementById(
+        "themeSelect"
+      );
 
     if (select) {
       select.value = theme;
     }
   }
 };
+
 </script>
 
 </body>
