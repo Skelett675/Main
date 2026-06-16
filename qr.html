@@ -2,47 +2,110 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>QR Generator</title>
+<title>QR Code Generator + Logo</title>
+
 <link rel="stylesheet" href="style.css">
 
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <style>
-.qr-box {
-  margin-top: 20px;
-  padding: 20px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 18px;
-  backdrop-filter: blur(20px);
-  display: inline-block;
+.container{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-#qr canvas {
-  border-radius: 12px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-  transition: 0.3s;
+.card{
+  width:420px;
+  padding:30px;
+  border-radius:28px;
+
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(25px);
+
+  text-align:center;
 }
 
-#qr canvas:hover {
-  transform: scale(1.05);
+/* DROP ZONE */
+.dropzone{
+  margin-top:10px;
+  padding:20px;
+
+  border:2px dashed rgba(255,255,255,0.3);
+  border-radius:18px;
+
+  cursor:pointer;
+  color:white;
+
+  transition:0.2s;
 }
 
-#dropzone {
-  padding: 15px;
-  border-radius: 12px;
-  border: 2px dashed var(--accent);
-  margin: 10px 0;
-  cursor: pointer;
-  opacity: 0.8;
-  transition: 0.3s;
+.dropzone:hover{
+  border-color:#3996F9;
+  box-shadow:0 0 20px #3996F9;
 }
 
-#dropzone:hover {
-  opacity: 1;
-  box-shadow: 0 0 15px var(--accent);
+/* QR AREA */
+#qr-container{
+  margin-top:20px;
+  position:relative;
+
+  width:220px;
+  height:220px;
+
+  margin-left:auto;
+  margin-right:auto;
+
+  background:white;
+  border-radius:18px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-button {
-  margin-top: 10px;
+/* LOGO OVER QR */
+#logo{
+  position:absolute;
+  width:55px;
+  height:55px;
+
+  border-radius:12px;
+
+  object-fit:cover;
+
+  z-index:10;
+}
+
+/* INPUT */
+input{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+
+  border-radius:14px;
+  border:none;
+
+  background:rgba(0,0,0,0.4);
+  color:white;
+}
+
+/* BUTTON */
+button{
+  margin-top:10px;
+  width:100%;
+  padding:12px;
+
+  border-radius:14px;
+  border:none;
+
+  background:#3996F9;
+  color:black;
+
+  font-weight:bold;
+  cursor:pointer;
 }
 </style>
 
@@ -55,100 +118,102 @@ button {
 <div class="container">
   <div class="card">
 
-    <h1>QR Generator</h1>
+    <h2>QR + Logo Generator</h2>
 
-    <input id="text" placeholder="Text oder Link"
-      style="width:100%;padding:10px;border-radius:10px;border:none;margin-bottom:10px;">
+    <input type="text" id="text" placeholder="Link / Text" oninput="generateQR()">
 
-    <div id="dropzone">Bild hier reinziehen (optional Logo)</div>
-    <input type="file" id="file" hidden>
-
-    <button onclick="generate()">QR erstellen</button>
-    <button onclick="downloadQR()">Download</button>
-
-    <div class="qr-box">
-      <div id="qr"></div>
+    <!-- DROP LOGO -->
+    <div class="dropzone" ondrop="dropHandler(event)" ondragover="event.preventDefault()">
+      Logo hier reinziehen oder klicken
+      <input type="file" id="file" accept="image/*" style="display:none" onchange="loadFile(event)">
     </div>
 
-    <button onclick="location.href='index.html'">Zurück</button>
+    <!-- QR -->
+    <div id="qr-container">
+      <div id="qrcode"></div>
+      <img id="logo" style="display:none;">
+    </div>
+
+    <button onclick="downloadQR()">Download QR</button>
 
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-
 <script>
-let canvasGlobal = null;
-let logo = null;
 
-const dropzone = document.getElementById("dropzone");
+let qr;
 
-dropzone.onclick = () => document.getElementById("file").click();
+function generateQR(){
 
-dropzone.ondragover = e => e.preventDefault();
-
-dropzone.ondrop = e => {
-  e.preventDefault();
-  handleFile(e.dataTransfer.files[0]);
-};
-
-document.getElementById("file").onchange = e => {
-  handleFile(e.target.files[0]);
-};
-
-function handleFile(file) {
-  const reader = new FileReader();
-  reader.onload = e => {
-    logo = e.target.result;
-    dropzone.innerText = "Bild geladen ✔";
-  };
-  reader.readAsDataURL(file);
-}
-
-function generate() {
   const text = document.getElementById("text").value;
-  const qrDiv = document.getElementById("qr");
+  const container = document.getElementById("qrcode");
 
-  qrDiv.innerHTML = "";
+  container.innerHTML = "";
 
-  const canvas = document.createElement("canvas");
-  canvasGlobal = canvas;
+  if(!text) return;
 
-  QRCode.toCanvas(canvas, text, {
-    width: 300,
-    margin: 2,
-    errorCorrectionLevel: "H"
-  }, function () {
-    qrDiv.appendChild(canvas);
-
-    /* LOGO NICHT RUND */
-    if (logo) {
-      const img = document.createElement("img");
-      img.src = logo;
-
-      img.style.position = "absolute";
-      img.style.width = "70px";
-      img.style.height = "70px";
-      img.style.left = "50%";
-      img.style.top = "50%";
-      img.style.transform = "translate(-50%, -50%)";
-      img.style.borderRadius = "0"; /* 🔥 WICHTIG: NICHT RUND */
-      img.style.boxShadow = "0 10px 30px rgba(0,0,0,0.4)";
-
-      qrDiv.style.position = "relative";
-      qrDiv.appendChild(img);
-    }
+  qr = new QRCode(container, {
+    text: text,
+    width: 220,
+    height: 220,
+    colorDark : "#000",
+    colorLight : "#fff",
+    correctLevel : QRCode.CorrectLevel.H
   });
 }
 
-function downloadQR() {
-  if (!canvasGlobal) return alert("Erst QR erstellen!");
+/* FILE UPLOAD */
+document.querySelector(".dropzone").onclick = () => {
+  document.getElementById("file").click();
+};
 
-  const link = document.createElement("a");
-  link.download = "qr.png";
-  link.href = canvasGlobal.toDataURL("image/png");
-  link.click();
+function loadFile(e){
+  const file = e.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(evt){
+    const img = document.getElementById("logo");
+    img.src = evt.target.result;
+    img.style.display = "block";
+  };
+
+  reader.readAsDataURL(file);
 }
+
+/* DROP SUPPORT */
+function dropHandler(ev){
+  ev.preventDefault();
+
+  const file = ev.dataTransfer.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(evt){
+    const img = document.getElementById("logo");
+    img.src = evt.target.result;
+    img.style.display = "block";
+  };
+
+  reader.readAsDataURL(file);
+}
+
+/* DOWNLOAD FIX */
+function downloadQR(){
+
+  html2canvas(document.getElementById("qr-container"), {
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: "#ffffff"
+  }).then(canvas => {
+
+    let link = document.createElement("a");
+    link.download = "qr-with-logo.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+
+  });
+
+}
+
 </script>
 
 </body>
