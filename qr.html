@@ -4,6 +4,32 @@
 <meta charset="UTF-8">
 <title>QR Generator</title>
 <link rel="stylesheet" href="style.css">
+
+<style>
+#qr {
+  margin-top:20px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+}
+
+/* smoother look */
+canvas {
+  border-radius: 22px;
+  image-rendering: auto;
+  box-shadow: 0 0 25px rgba(0,0,0,0.4);
+}
+
+#dropzone {
+  padding:20px;
+  border-radius:15px;
+  border:2px dashed var(--accent);
+  margin:10px 0;
+  cursor:pointer;
+}
+</style>
+
 </head>
 
 <body>
@@ -18,10 +44,11 @@
     <input id="text" placeholder="Text oder Link"
       style="width:100%;padding:10px;border-radius:10px;border:none;margin-bottom:10px;">
 
-    <div id="dropzone">Bild hier reinziehen (Logo optional)</div>
+    <div id="dropzone">Bild hier reinziehen (optional Logo)</div>
     <input type="file" id="file" hidden>
 
     <button onclick="generate()">QR erstellen</button>
+    <button onclick="downloadQR()">Download</button>
 
     <div id="qr"></div>
 
@@ -33,15 +60,15 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
 <script>
+let canvasGlobal = null;
 let logo = null;
 
+/* DROPZONE */
 const dropzone = document.getElementById("dropzone");
 
 dropzone.onclick = () => document.getElementById("file").click();
 
-dropzone.ondragover = e => {
-  e.preventDefault();
-};
+dropzone.ondragover = e => e.preventDefault();
 
 dropzone.ondrop = e => {
   e.preventDefault();
@@ -61,6 +88,7 @@ function handleFile(file) {
   reader.readAsDataURL(file);
 }
 
+/* QR GENERATE */
 function generate() {
   const text = document.getElementById("text").value;
   const qrDiv = document.getElementById("qr");
@@ -68,15 +96,17 @@ function generate() {
   qrDiv.innerHTML = "";
 
   const canvas = document.createElement("canvas");
+  canvasGlobal = canvas;
 
   QRCode.toCanvas(canvas, text, {
-    width: 260,
-    margin: 2
+    width: 280,
+    margin: 2,
+    errorCorrectionLevel: "H"
   }, function () {
 
-    canvas.style.borderRadius = "20px";
     qrDiv.appendChild(canvas);
 
+    /* LOGO CENTER */
     if (logo) {
       const img = document.createElement("img");
       img.src = logo;
@@ -93,6 +123,19 @@ function generate() {
       qrDiv.appendChild(img);
     }
   });
+}
+
+/* DOWNLOAD */
+function downloadQR() {
+  if (!canvasGlobal) {
+    alert("Erst QR erstellen!");
+    return;
+  }
+
+  const link = document.createElement("a");
+  link.download = "qr.png";
+  link.href = canvasGlobal.toDataURL("image/png");
+  link.click();
 }
 </script>
 
