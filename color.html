@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Farbcode Generator</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+.container2{
+    max-width:900px;
+    margin:auto;
+    padding:40px;
+}
+
+.generator{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(20px);
+    border-radius:25px;
+    padding:35px;
+    box-shadow:0 10px 40px rgba(0,0,0,.6);
+}
+
+input,button,select{
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+}
+
+input[type=text]{
+    width:100%;
+    margin-bottom:15px;
+}
+
+.colorRow{
+    display:flex;
+    gap:10px;
+    margin-bottom:15px;
+    flex-wrap:wrap;
+}
+
+.preview{
+    font-size:40px;
+    font-weight:bold;
+    margin:30px 0;
+    min-height:50px;
+}
+
+.output{
+    background:#111;
+    padding:15px;
+    border-radius:15px;
+    word-break:break-all;
+    margin-top:20px;
+}
+
+.effects{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+    margin:20px 0;
+}
+
+.effects label{
+    cursor:pointer;
+}
+
+.buttons{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
+</style>
+</head>
+<body>
+
+<div class="glow"></div>
+
+<div class="container2">
+<div class="generator">
+
+<h1>🎨 Farbcode Generator</h1>
+
+<input id="text" type="text" placeholder="Text eingeben">
+
+<h3>Farben</h3>
+
+<div class="colorRow">
+<input type="color" id="color1" value="#3996F9">
+<input type="text" id="hex1" value="#3996F9">
+
+<input type="color" id="color2" value="#7B61FF">
+<input type="text" id="hex2" value="#7B61FF">
+</div>
+
+<button onclick="toggleGradient()">
+Farbverlauf AN/AUS
+</button>
+
+<div class="effects">
+<label><input type="checkbox" id="bold"> Fett</label>
+<label><input type="checkbox" id="italic"> Kursiv</label>
+<label><input type="checkbox" id="underline"> Unterstrichen</label>
+<label><input type="checkbox" id="strike"> Durchgestrichen</label>
+</div>
+
+<div class="preview" id="preview">
+Vorschau
+</div>
+
+<div class="output" id="output">
+Code erscheint hier
+</div>
+
+<div class="buttons">
+<button onclick="generate()">
+Generieren
+</button>
+
+<button onclick="copyCode()">
+Code kopieren
+</button>
+
+<button onclick="copyLink()">
+Link kopieren
+</button>
+
+<button onclick="location.href='index.html'">
+Zurück
+</button>
+</div>
+
+</div>
+</div>
+
+<script>
+let gradient = true;
+
+function toggleGradient(){
+    gradient=!gradient;
+    generate();
+}
+
+function lerp(a,b,t){
+    return Math.round(a+(b-a)*t);
+}
+
+function hexToRgb(hex){
+    hex=hex.replace("#","");
+    return {
+        r:parseInt(hex.substring(0,2),16),
+        g:parseInt(hex.substring(2,4),16),
+        b:parseInt(hex.substring(4,6),16)
+    };
+}
+
+function rgbToHex(r,g,b){
+    return "#"+
+    r.toString(16).padStart(2,"0")+
+    g.toString(16).padStart(2,"0")+
+    b.toString(16).padStart(2,"0");
+}
+
+function generate(){
+
+    let text=document.getElementById("text").value;
+
+    let c1=document.getElementById("hex1").value;
+    let c2=document.getElementById("hex2").value;
+
+    let preview=document.getElementById("preview");
+    let output=document.getElementById("output");
+
+    preview.innerHTML="";
+    output.innerHTML="";
+
+    if(!text)return;
+
+    let code="";
+
+    if(document.getElementById("bold").checked)
+        code+="&l";
+
+    if(document.getElementById("italic").checked)
+        code+="&o";
+
+    if(document.getElementById("underline").checked)
+        code+="&n";
+
+    if(document.getElementById("strike").checked)
+        code+="&m";
+
+    if(!gradient){
+
+        preview.style.color=c1;
+        preview.innerText=text;
+
+        code+="&#"+c1.replace("#","")+text;
+
+        output.innerText=code;
+        return;
+    }
+
+    let rgb1=hexToRgb(c1);
+    let rgb2=hexToRgb(c2);
+
+    for(let i=0;i<text.length;i++){
+
+        let t=i/(text.length-1||1);
+
+        let r=lerp(rgb1.r,rgb2.r,t);
+        let g=lerp(rgb1.g,rgb2.g,t);
+        let b=lerp(rgb1.b,rgb2.b,t);
+
+        let hex=rgbToHex(r,g,b);
+
+        let span=document.createElement("span");
+        span.style.color=hex;
+        span.innerText=text[i];
+
+        if(document.getElementById("bold").checked)
+            span.style.fontWeight="bold";
+
+        if(document.getElementById("italic").checked)
+            span.style.fontStyle="italic";
+
+        if(document.getElementById("underline").checked)
+            span.style.textDecoration="underline";
+
+        if(document.getElementById("strike").checked)
+            span.style.textDecoration+=" line-through";
+
+        preview.appendChild(span);
+
+        code+="&#"+hex.replace("#","")+text[i];
+    }
+
+    output.innerText=code;
+}
+
+function copyCode(){
+    navigator.clipboard.writeText(
+        document.getElementById("output").innerText
+    );
+}
+
+function copyLink(){
+
+    let text=encodeURIComponent(
+        document.getElementById("text").value
+    );
+
+    let c1=encodeURIComponent(
+        document.getElementById("hex1").value
+    );
+
+    let c2=encodeURIComponent(
+        document.getElementById("hex2").value
+    );
+
+    let link=
+    location.origin+
+    location.pathname+
+    "?text="+text+
+    "&c1="+c1+
+    "&c2="+c2+
+    "&g="+gradient;
+
+    navigator.clipboard.writeText(link);
+}
+
+document.getElementById("color1").oninput=e=>{
+    hex1.value=e.target.value;
+    generate();
+};
+
+document.getElementById("color2").oninput=e=>{
+    hex2.value=e.target.value;
+    generate();
+};
+
+document.getElementById("hex1").oninput=e=>{
+    color1.value=e.target.value;
+    generate();
+};
+
+document.getElementById("hex2").oninput=e=>{
+    color2.value=e.target.value;
+    generate();
+};
+
+document.getElementById("text").oninput=generate;
+
+generate();
+</script>
+
+</body>
+</html>
