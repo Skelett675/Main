@@ -1,9 +1,7 @@
-```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Main Website</title>
 
 <link rel="stylesheet" href="style.css">
@@ -11,126 +9,75 @@
 
 <body>
 
+<!-- GLOW -->
 <div class="glow"></div>
 
 <!-- SETTINGS BUTTON -->
-<button class="gear" onclick="toggleSettings()">
-⚙
-</button>
+<button class="gear" onclick="toggleSettings()">⚙</button>
 
-<!-- SETTINGS MENU -->
+<!-- SETTINGS PANEL -->
 <div class="settings" id="settings">
-
   <h3>Einstellungen</h3>
 
-  <label for="themeSelect">
-    Farbe
-  </label>
-
-  <select id="themeSelect"
-          onchange="setTheme(this.value)">
-
+  <label>Farbe</label>
+  <select id="themeSelect" onchange="setTheme(this.value)">
     <option value="blue">Blau</option>
     <option value="gray">Grau</option>
     <option value="purple">Lila</option>
     <option value="red">Rot</option>
     <option value="green">Grün</option>
     <option value="orange">Orange</option>
-
   </select>
-
 </div>
 
 <!-- MAIN -->
 <div class="container">
-
   <div class="card">
 
     <h1>Main Website</h1>
+    <p>Willkommen</p>
 
-    <p>
-      Willkommen
-    </p>
-
-    <button onclick="location.href='info.html'">
-      Infos
-    </button>
-
-    <button onclick="location.href='contact.html'">
-      Kontakt
-    </button>
-
-    <button onclick="location.href='terms.html'">
-      Nutzungsbedingungen
-    </button>
-
-    <button onclick="location.href='privacy.html'">
-      Datenschutz
-    </button>
-
-    <button onclick="location.href='qr.html'">
-      QR Generator
-    </button>
-
-    <button onclick="location.href='color.html'">
-      Farbcode Generator
-    </button>
+    <button onclick="location.href='info.html'">Infos</button>
+    <button onclick="location.href='contact.html'">Kontakt</button>
+    <button onclick="location.href='terms.html'">Terms</button>
+    <button onclick="location.href='privacy.html'">Privacy</button>
+    <button onclick="location.href='qr.html'">QR Generator</button>
+    <button onclick="location.href='color.html'">Color Generator</button>
 
   </div>
-
 </div>
 
+<!-- SCRIPT -->
 <script>
 
 function toggleSettings() {
-  document
-    .getElementById("settings")
-    .classList
-    .toggle("show");
+  document.getElementById("settings").classList.toggle("show");
 }
 
+/* THEME SYSTEM */
 function setTheme(theme) {
+  let color = "";
 
-  document.documentElement
-    .setAttribute(
-      "data-theme",
-      theme
-    );
+  switch(theme){
+    case "blue": color = "#3996F9"; break;
+    case "gray": color = "#9aa0a6"; break;
+    case "purple": color = "#b84dff"; break;
+    case "red": color = "#ff4d4d"; break;
+    case "green": color = "#58f2a3"; break;
+    case "orange": color = "#ff9f43"; break;
+  }
 
-  localStorage.setItem(
-    "theme",
-    theme
-  );
+  document.documentElement.style.setProperty("--accent", color);
+  localStorage.setItem("theme", theme);
 }
 
+/* LOAD SAVED SETTINGS */
 window.onload = () => {
-
-  const theme =
-    localStorage.getItem(
-      "theme"
-    );
-
-  if (theme) {
-
-    document.documentElement
-      .setAttribute(
-        "data-theme",
-        theme
-      );
-
-    const select =
-      document.getElementById(
-        "themeSelect"
-      );
-
-    if (select) {
-      select.value = theme;
-    }
-  }
+  const saved = localStorage.getItem("theme");
+  if (saved) setTheme(saved);
 };
 
 </script>
 
 </body>
 </html>
-```
