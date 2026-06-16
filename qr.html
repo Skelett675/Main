@@ -6,27 +6,43 @@
 <link rel="stylesheet" href="style.css">
 
 <style>
-#qr {
-  margin-top:20px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  position:relative;
+.qr-box {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 18px;
+  backdrop-filter: blur(20px);
+  display: inline-block;
 }
 
-/* smoother look */
-canvas {
-  border-radius: 22px;
-  image-rendering: auto;
-  box-shadow: 0 0 25px rgba(0,0,0,0.4);
+#qr canvas {
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+  transition: 0.3s;
+}
+
+#qr canvas:hover {
+  transform: scale(1.05);
 }
 
 #dropzone {
-  padding:20px;
-  border-radius:15px;
-  border:2px dashed var(--accent);
-  margin:10px 0;
-  cursor:pointer;
+  padding: 15px;
+  border-radius: 12px;
+  border: 2px dashed var(--accent);
+  margin: 10px 0;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: 0.3s;
+}
+
+#dropzone:hover {
+  opacity: 1;
+  box-shadow: 0 0 15px var(--accent);
+}
+
+button {
+  margin-top: 10px;
 }
 </style>
 
@@ -50,7 +66,9 @@ canvas {
     <button onclick="generate()">QR erstellen</button>
     <button onclick="downloadQR()">Download</button>
 
-    <div id="qr"></div>
+    <div class="qr-box">
+      <div id="qr"></div>
+    </div>
 
     <button onclick="location.href='index.html'">Zurück</button>
 
@@ -63,7 +81,6 @@ canvas {
 let canvasGlobal = null;
 let logo = null;
 
-/* DROPZONE */
 const dropzone = document.getElementById("dropzone");
 
 dropzone.onclick = () => document.getElementById("file").click();
@@ -88,7 +105,6 @@ function handleFile(file) {
   reader.readAsDataURL(file);
 }
 
-/* QR GENERATE */
 function generate() {
   const text = document.getElementById("text").value;
   const qrDiv = document.getElementById("qr");
@@ -99,25 +115,25 @@ function generate() {
   canvasGlobal = canvas;
 
   QRCode.toCanvas(canvas, text, {
-    width: 280,
+    width: 300,
     margin: 2,
     errorCorrectionLevel: "H"
   }, function () {
-
     qrDiv.appendChild(canvas);
 
-    /* LOGO CENTER */
+    /* LOGO NICHT RUND */
     if (logo) {
       const img = document.createElement("img");
       img.src = logo;
 
       img.style.position = "absolute";
-      img.style.width = "60px";
-      img.style.height = "60px";
-      img.style.borderRadius = "50%";
+      img.style.width = "70px";
+      img.style.height = "70px";
       img.style.left = "50%";
       img.style.top = "50%";
       img.style.transform = "translate(-50%, -50%)";
+      img.style.borderRadius = "0"; /* 🔥 WICHTIG: NICHT RUND */
+      img.style.boxShadow = "0 10px 30px rgba(0,0,0,0.4)";
 
       qrDiv.style.position = "relative";
       qrDiv.appendChild(img);
@@ -125,12 +141,8 @@ function generate() {
   });
 }
 
-/* DOWNLOAD */
 function downloadQR() {
-  if (!canvasGlobal) {
-    alert("Erst QR erstellen!");
-    return;
-  }
+  if (!canvasGlobal) return alert("Erst QR erstellen!");
 
   const link = document.createElement("a");
   link.download = "qr.png";
