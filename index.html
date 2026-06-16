@@ -11,6 +11,7 @@
 
 <div class="glow"></div>
 
+<!-- SETTINGS -->
 <button class="gear" onclick="toggleSettings()">⚙</button>
 
 <div class="settings" id="settings">
@@ -26,15 +27,9 @@
     <option value="orange">Orange</option>
   </select>
 
-  <!-- 🔥 FARBE HINZUFÜGEN ÜBER SETTINGS -->
-  <div style="margin-top:15px;">
-    <button onclick="location.href='color.html'">
-      Farbcode Generator
-    </button>
-  </div>
-
 </div>
 
+<!-- MAIN -->
 <div class="container">
   <div class="card">
 
@@ -45,7 +40,16 @@
     <button onclick="location.href='contact.html'">Kontakt</button>
     <button onclick="location.href='terms.html'">Terms</button>
     <button onclick="location.href='privacy.html'">Privacy</button>
-    <button onclick="location.href='qr.html'">QR Generator</button>
+
+    <!-- QR -->
+    <button onclick="location.href='qr.html'">
+      QR Generator
+    </button>
+
+    <!-- COLOR -->
+    <button onclick="location.href='color.html'">
+      Farbcode Generator
+    </button>
 
   </div>
 </div>
@@ -59,14 +63,14 @@ function toggleSettings(){
 function setTheme(c){
   const map={
     blue:"#3996F9",
-    gray:"#999",
+    gray:"#888",
     purple:"#b84dff",
     red:"#ff4d4d",
-    green:"#58f2a3",
-    orange:"#ff9f43"
+    green:"#4dff88",
+    orange:"#ff9f4d"
   };
 
-  document.documentElement.style.setProperty("--accent",map[c]);
+  document.documentElement.style.setProperty("--accent", map[c]);
 }
 
 </script>
