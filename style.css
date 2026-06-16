@@ -1,137 +1,207 @@
-:root {
-  --accent: #3996F9;
-  --bg1: #0b0f17;
-  --bg2: #070a10;
-}
-
-/* THEMES */
-[data-theme="blue"] { --accent:#3996F9; }
-[data-theme="gray"] { --accent:#9aa0a6; }
-[data-theme="purple"] { --accent:#b84dff; }
-[data-theme="red"] { --accent:#ff4d4d; }
-[data-theme="green"] { --accent:#58f2a3; }
-[data-theme="orange"] { --accent:#ff9f43; }
-
-body {
-  margin:0;
-  font-family: Arial;
-  background: radial-gradient(circle at top, var(--bg1), var(--bg2));
-  color:white;
-  overflow-x:hidden;
-}
+/* =========================
+   GLOW
+========================= */
 
 .glow {
-  position:fixed;
-  width:600px;
-  height:600px;
+  position: fixed;
+  width: 500px;
+  height: 500px;
   background: var(--accent);
-  opacity:0.25;
-  filter: blur(140px);
-  top:-200px;
-  left:-200px;
+  opacity: 0.25;
+  filter: blur(130px);
+  border-radius: 50%;
+  top: -150px;
+  left: -150px;
+  pointer-events: none;
+  transition: background 0.4s ease;
 }
 
-.container {
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  flex-direction:column;
+/* =========================
+   SETTINGS BUTTON
+========================= */
+
+.gear {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+
+  width: 55px;
+  height: 55px;
+
+  border: none;
+  border-radius: 18px;
+
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+
+  color: white;
+  font-size: 28px;
+
+  cursor: pointer;
+
+  z-index: 1001;
+
+  transition:
+    transform .3s ease,
+    box-shadow .3s ease,
+    background .3s ease;
 }
 
-/* CARD */
+.gear:hover {
+  transform: rotate(90deg) scale(1.08);
+
+  background: rgba(255,255,255,0.12);
+
+  box-shadow:
+    0 0 20px var(--accent),
+    0 0 40px rgba(0,0,0,0.4);
+}
+
+/* =========================
+   SETTINGS MENU
+========================= */
+
+.settings {
+  position: fixed;
+  top: 85px;
+  right: 20px;
+
+  width: 300px;
+
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(25px);
+
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 25px;
+
+  padding: 22px;
+
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.45);
+
+  z-index: 1000;
+
+  opacity: 0;
+  transform:
+    translateY(-20px)
+    scale(.95);
+
+  pointer-events: none;
+
+  transition:
+    opacity .35s ease,
+    transform .35s ease,
+    box-shadow .35s ease;
+}
+
+.settings.show {
+  opacity: 1;
+  transform:
+    translateY(0)
+    scale(1);
+
+  pointer-events: auto;
+}
+
+.settings h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.settings label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.settings select {
+  width: 100%;
+  padding: 12px;
+
+  border: none;
+  border-radius: 15px;
+
+  background: rgba(255,255,255,0.08);
+  color: white;
+
+  outline: none;
+
+  font-size: 15px;
+
+  backdrop-filter: blur(10px);
+
+  transition: .3s;
+}
+
+.settings select:hover {
+  box-shadow: 0 0 15px var(--accent);
+}
+
+/* =========================
+   CARD
+========================= */
+
 .card {
-  padding:40px;
-  border-radius:25px;
+  padding: 45px;
+  border-radius: 28px;
+
   background: rgba(255,255,255,0.06);
   backdrop-filter: blur(20px);
-  border:1px solid rgba(255,255,255,0.1);
-  box-shadow:0 10px 40px rgba(0,0,0,0.6);
-  transform: perspective(900px) rotateX(3deg);
-  transition:0.4s;
+
+  border: 1px solid rgba(255,255,255,0.1);
+
+  box-shadow:
+    0 10px 40px rgba(0,0,0,0.7),
+    inset 0 0 20px rgba(255,255,255,0.05);
+
+  transform:
+    perspective(1000px)
+    rotateX(3deg);
+
+  transition: .4s;
 }
 
 .card:hover {
-  transform: perspective(900px) rotateX(0deg) scale(1.03);
-  box-shadow:0 0 30px var(--accent);
+  transform:
+    perspective(1000px)
+    rotateX(0deg)
+    scale(1.03);
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.8),
+    0 0 25px var(--accent);
 }
 
-/* BUTTONS */
+/* =========================
+   BUTTONS
+========================= */
+
 button {
-  margin:10px;
-  padding:12px 18px;
-  border:none;
-  border-radius:12px;
-  background:var(--accent);
-  color:black;
-  font-weight:bold;
-  cursor:pointer;
-  transition:0.3s;
+  margin: 10px;
+  padding: 13px 22px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: var(--accent);
+  color: black;
+
+  font-weight: bold;
+  font-size: 15px;
+
+  cursor: pointer;
+
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease;
 }
 
 button:hover {
-  transform:scale(1.05);
-}
+  transform:
+    translateY(-3px)
+    scale(1.04);
 
-/* SETTINGS */
-.gear {
-  position:fixed;
-  top:15px;
-  right:15px;
-  font-size:22px;
-  background:none;
-  border:none;
-  color:white;
-  cursor:pointer;
-}
-
-.settings {
-  position:fixed;
-  top:60px;
-  right:15px;
-  width:220px;
-  padding:15px;
-  border-radius:15px;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(20px);
-  border:1px solid rgba(255,255,255,0.1);
-  display:none;
-}
-
-select {
-  width:100%;
-  padding:8px;
-  border-radius:10px;
-  background:#111;
-  color:white;
-  border:none;
-}
-
-/* ================= QR ================= */
-
-#qr {
-  margin-top:20px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  position:relative;
-}
-
-#dropzone {
-  padding:20px;
-  border-radius:15px;
-  border:2px dashed var(--accent);
-  margin:10px 0;
-  cursor:pointer;
-  transition:0.3s;
-}
-
-#dropzone:hover {
-  transform:scale(1.02);
-  box-shadow:0 0 20px var(--accent);
-}
-
-#qr canvas {
-  border-radius:20px;
+  box-shadow:
+    0 0 20px var(--accent);
 }
