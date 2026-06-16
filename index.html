@@ -2,37 +2,52 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Main Website</title>
+<title>Main</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div class="glow"></div>
 
-<div class="container">
+<button class="settings-btn" onclick="toggleSettings()">⚙</button>
 
-  <h1>Main Website</h1>
-  <p class="sub">Skelett Bot Hub</p>
+<div class="settings" id="settings">
+  <h3>Settings</h3>
 
-  <div class="grid">
+  <label>Language</label>
+  <select onchange="setLang(this.value)">
+    <option value="en">🇬🇧 English</option>
+    <option value="de">🇩🇪 Deutsch</option>
+  </select>
 
-    <button onclick="location.href='info.html'">Infos</button>
-    <button onclick="location.href='contact.html'">Contacts</button>
-    <button onclick="location.href='privacy.html'">Privacy</button>
-    <button onclick="location.href='terms.html'">Terms</button>
+  <br><br>
 
-    <button onclick="window.open('https://discord.com')">
-      Discord Server
-    </button>
+  <label>Color</label>
+  <select onchange="setTheme(this.value)">
+    <option value="blue">Blue</option>
+    <option value="green">Green</option>
+    <option value="red">Red</option>
+    <option value="purple">Purple</option>
+    <option value="orange">Orange</option>
+    <option value="gray">Gray</option>
+  </select>
+</div>
 
-    <button onclick="window.open('https://discord.com/oauth2/authorize')">
-      Bot Invite
-    </button>
+<div class="center">
 
+  <div class="card">
+    <h1 data-i18n="title">Main Website</h1>
+    <p data-i18n="subtitle">Welcome</p>
+
+    <button onclick="location.href='info.html'" data-i18n="info">Infos</button>
+    <button onclick="location.href='contact.html'" data-i18n="contact">Contact</button>
+    <button onclick="location.href='discord.html'" data-i18n="discord">Discord</button>
+    <button onclick="location.href='terms.html'" data-i18n="terms">Terms</button>
+    <button onclick="location.href='privacy.html'" data-i18n="privacy">Privacy</button>
   </div>
 
 </div>
 
+<script src="script.js"></script>
 </body>
 </html>
