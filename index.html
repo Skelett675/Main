@@ -5,51 +5,6 @@
 <title>Main Website</title>
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
-
-<div class="glow"></div>
-
-<button class="gear" onclick="toggleSettings()">⚙</button>
-
-<div class="settings" id="settings">
-  <h3>Einstellungen</h3>
-
-  <label>Farbe</label>
-  <select onchange="setTheme(this.value)">
-    <option value="blue">Blau</option>
-    <option value="gray">Grau</option>
-    <option value="purple">Lila</option>
-    <option value="red">Rot</option>
-    <option value="green">Grün</option>
-    <option value="orange">Orange</option>
-  </select>
-</div>
-
-<div class="container">
-  <div class="card">
-
-    <h1>Main Website</h1>
-    <p>Willkommen</p>
-
-    <button onclick="location.href='info.html'">Infos</button>
-    <button onclick="location.href='contact.html'">Kontakt</button>
-    <button onclick="location.href='terms.html'">Nutzungsbedingungen</button>
-    <button onclick="location.href='privacy.html'">Datenschutz</button>
-
-  </div>
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<title>Main Website</title>
-<link rel="stylesheet" href="style.css">
-</head>
 
 <body>
 
@@ -84,14 +39,12 @@
     <button onclick="location.href='contact.html'">Kontakt</button>
     <button onclick="location.href='terms.html'">Nutzungsbedingungen</button>
     <button onclick="location.href='privacy.html'">Datenschutz</button>
-
-    <!-- QR -->
     <button onclick="location.href='qr.html'">QR Generator</button>
 
   </div>
 </div>
 
-<!-- INLINE SCRIPT (wie vorher stabil) -->
+<!-- SCRIPT -->
 <script>
 function toggleSettings() {
   const s = document.getElementById("settings");
