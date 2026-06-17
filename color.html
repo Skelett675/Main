@@ -1,30 +1,36 @@
-```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Color Generator</title>
 
 <style>
+*{
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
 body{
   margin:0;
   min-height:100vh;
-  background:#0f1117;
-  font-family:Arial,sans-serif;
   display:flex;
   justify-content:center;
   align-items:center;
+  background:
+    radial-gradient(circle at top,#273b74,#0f1117 60%);
   color:white;
 }
 
 .card{
   width:600px;
+  max-width:95%;
   padding:35px;
   border-radius:30px;
-  background:rgba(255,255,255,0.06);
+  background:rgba(255,255,255,.06);
   backdrop-filter:blur(25px);
+  box-shadow:0 0 40px rgba(57,150,249,.25);
   text-align:center;
-  box-shadow:0 0 30px rgba(57,150,249,.25);
 }
 
 h2{
@@ -32,27 +38,39 @@ h2{
 }
 
 .preview{
-  margin:20px 0;
-  padding:25px;
-  border-radius:25px;
-  background:rgba(255,255,255,.06);
-  min-height:80px;
+  min-height:90px;
   display:flex;
   justify-content:center;
   align-items:center;
-  font-size:30px;
+  font-size:34px;
   font-weight:bold;
+  padding:20px;
+  margin:20px 0;
+  border-radius:24px;
+  background:rgba(255,255,255,.05);
 }
 
-input,select{
+input,
+select,
+button{
   width:100%;
   padding:12px;
-  margin-top:10px;
   border:none;
   border-radius:14px;
+  margin-top:12px;
+}
+
+input,
+select{
   background:rgba(0,0,0,.35);
   color:white;
-  box-sizing:border-box;
+}
+
+button{
+  background:#3996F9;
+  color:black;
+  font-weight:bold;
+  cursor:pointer;
 }
 
 .row{
@@ -64,41 +82,29 @@ input,select{
 }
 
 .row label{
+  background:rgba(255,255,255,.08);
   padding:8px 12px;
   border-radius:12px;
-  background:rgba(255,255,255,.08);
-}
-
-button{
-  width:100%;
-  padding:12px;
-  margin-top:15px;
-  border:none;
-  border-radius:16px;
-  background:#3996F9;
-  color:black;
-  font-weight:bold;
-  cursor:pointer;
 }
 
 .color-list{
   display:flex;
   flex-wrap:wrap;
   justify-content:center;
-  gap:12px;
+  gap:14px;
   margin-top:15px;
 }
 
 .color-box{
-  width:55px;
-  height:55px;
+  width:60px;
+  height:60px;
   border-radius:14px;
   border:2px solid rgba(255,255,255,.15);
   cursor:pointer;
   transition:.2s;
   box-shadow:
-    0 0 12px rgba(255,255,255,.08),
-    inset 0 0 12px rgba(255,255,255,.08);
+    0 0 14px rgba(255,255,255,.1),
+    inset 0 0 14px rgba(255,255,255,.1);
 }
 
 .color-box:hover{
@@ -120,48 +126,50 @@ button{
 
 <div class="card">
 
-<h2>Color Generator</h2>
+  <h2>Color Generator</h2>
 
-<div class="preview" id="preview">
-Preview
-</div>
+  <!-- PREVIEW GANZ OBEN -->
+  <div class="preview" id="preview">
+    Preview
+  </div>
 
-<input
-type="text"
-id="text"
-placeholder="Text eingeben"
-oninput="update()">
+  <input
+    id="text"
+    placeholder="Text eingeben"
+    oninput="update()"
+  >
 
-<select id="mode" onchange="update()">
-  <option value="single">Einfarbig</option>
-  <option value="gradient" selected>Gradient</option>
-  <option value="rainbow">Rainbow</option>
-</select>
+  <select id="mode" onchange="update()">
+    <option value="single">Einfarbig</option>
+    <option value="gradient" selected>Gradient</option>
+    <option value="rainbow">Rainbow</option>
+  </select>
 
-<div class="row">
-  <label><input type="checkbox" id="bold" onchange="update()"> Fett</label>
-  <label><input type="checkbox" id="italic" onchange="update()"> Kursiv</label>
-  <label><input type="checkbox" id="underline" onchange="update()"> Unterstrichen</label>
-  <label><input type="checkbox" id="strike" onchange="update()"> Durchgestrichen</label>
-</div>
+  <div class="row">
+    <label><input type="checkbox" id="bold" onchange="update()"> Fett</label>
+    <label><input type="checkbox" id="italic" onchange="update()"> Kursiv</label>
+    <label><input type="checkbox" id="underline" onchange="update()"> Unterstrichen</label>
+    <label><input type="checkbox" id="strike" onchange="update()"> Durchgestrichen</label>
+  </div>
 
-<button onclick="addColor()">
-🎨 Farbe hinzufügen
-</button>
+  <button onclick="addColor()">
+    🎨 Farbe hinzufügen
+  </button>
 
-<div id="colorList" class="color-list"></div>
+  <div id="colorList" class="color-list"></div>
 
-<div id="code" class="code">
-Code
-</div>
+  <div id="code" class="code">
+    Code
+  </div>
 
-<button onclick="copyCode()">
-📋 Copy
-</button>
+  <button onclick="copyCode()">
+    📋 Copy
+  </button>
 
 </div>
 
 <script>
+
 let colors = [
   randomColor(),
   randomColor()
@@ -202,6 +210,7 @@ function renderColors(){
 
       picker.type = "color";
       picker.value = color;
+
       picker.style.position = "fixed";
       picker.style.left = "-9999px";
 
@@ -213,7 +222,11 @@ function renderColors(){
         update();
       };
 
-      picker.click();
+      if(picker.showPicker){
+        picker.showPicker();
+      }else{
+        picker.click();
+      }
 
       picker.onchange = ()=>{
         picker.remove();
@@ -239,13 +252,13 @@ function hexToRgb(hex){
 function interpolate(c1,c2,t){
 
   const r =
-    Math.round(c1.r+(c2.r-c1.r)*t);
+    Math.round(c1.r + (c2.r-c1.r)*t);
 
   const g =
-    Math.round(c1.g+(c2.g-c1.g)*t);
+    Math.round(c1.g + (c2.g-c1.g)*t);
 
   const b =
-    Math.round(c1.b+(c2.b-c1.b)*t);
+    Math.round(c1.b + (c2.b-c1.b)*t);
 
   return (
     r.toString(16).padStart(2,"0") +
@@ -257,8 +270,8 @@ function interpolate(c1,c2,t){
 function update(){
 
   const text =
-    document.getElementById("text").value
-    || "Preview";
+    document.getElementById("text").value ||
+    "Preview";
 
   const mode =
     document.getElementById("mode").value;
@@ -330,27 +343,45 @@ function update(){
         ${colors.join(",")}
       )`;
 
+    preview.style.backgroundSize =
+      "300% 300%";
+
     preview.style.webkitBackgroundClip =
       "text";
 
     preview.style.color =
       "transparent";
 
-    const start =
-      hexToRgb(colors[0]);
-
-    const end =
-      hexToRgb(colors[colors.length-1]);
+    const segments =
+      colors.length - 1;
 
     for(let i=0;i<text.length;i++){
 
       const t =
-        text.length===1
+        text.length === 1
         ? 0
         : i/(text.length-1);
 
+      const seg =
+        Math.min(
+          segments - 0.0001,
+          t * segments
+        );
+
+      const index =
+        Math.floor(seg);
+
+      const local =
+        seg - index;
+
+      const c1 =
+        hexToRgb(colors[index]);
+
+      const c2 =
+        hexToRgb(colors[index+1]);
+
       const hex =
-        interpolate(start,end,t);
+        interpolate(c1,c2,local);
 
       out +=
         `&#${hex}${format}${text[i]}`;
@@ -364,7 +395,7 @@ function update(){
       "#ff7a00",
       "#ffee00",
       "#00ff00",
-      "#00e5ff",
+      "#00d9ff",
       "#004cff",
       "#b300ff"
     ];
@@ -385,17 +416,17 @@ function update(){
 
       const t =
         text.length===1
-        ? 0
-        : i/(text.length-1);
+          ? 0
+          : i/(text.length-1);
 
-      const segment =
-        t*(rainbow.length-1);
+      const seg =
+        t * (rainbow.length-1);
 
       const index =
-        Math.floor(segment);
+        Math.floor(seg);
 
       const local =
-        segment-index;
+        seg - index;
 
       const c1 =
         hexToRgb(rainbow[index]);
@@ -422,17 +453,19 @@ function update(){
 }
 
 function copyCode(){
+
   navigator.clipboard.writeText(
     document.getElementById("code").innerText
   );
 }
 
 window.onload = ()=>{
+
   renderColors();
   update();
+
 };
 </script>
 
 </body>
 </html>
-```
