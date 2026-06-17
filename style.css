@@ -51,12 +51,15 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  padding: 20px;
 }
 
 /* CARD */
 .card {
   padding: 40px;
   border-radius: 28px;
+  max-width: 600px;
+  width: 100%;
 
   background: rgba(255,255,255,0.06);
   backdrop-filter: blur(25px);
@@ -116,6 +119,7 @@ button:hover {
   font-size: 22px;
 
   cursor: pointer;
+  padding: 0;
 }
 
 /* SETTINGS */
@@ -136,10 +140,46 @@ button:hover {
   border: 1px solid rgba(255,255,255,0.1);
 
   display: none;
+  z-index: 1000;
 }
 
 .settings.show {
   display: block;
+}
+
+.settings h3 {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+}
+
+.settings label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.settings select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(0,0,0,0.3);
+  color: white;
+  cursor: pointer;
+}
+
+.settings select option {
+  background: #1a1c20;
+  color: white;
+}
+
+.lang-btn {
+  margin: 0 !important;
+  padding: 8px 12px !important;
+}
+
+.lang-btn.active {
+  background: var(--accent) !important;
 }
 
 /* COLOR PREVIEW FIX */
@@ -159,4 +199,21 @@ button:hover {
 
   font-size: 28px;
   font-weight: bold;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .card {
+    padding: 30px 20px;
+  }
+
+  .settings {
+    width: calc(100% - 40px);
+    right: 20px;
+  }
+
+  button {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
 }

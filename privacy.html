@@ -1,21 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Privacy</title>
+<title>Datenschutz / Privacy</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="glow"></div>
 
-<div class="center">
+<div class="container">
   <div class="card">
-    <h1>Privacy</h1>
-    <p>No personal data is stored.</p>
-    <button onclick="location.href='index.html'">Back</button>
+    <h1 id="privacyTitle">Datenschutz</h1>
+    <p id="privacyText">Keine persönlichen Daten werden gespeichert.</p>
+    <button onclick="location.href='index.html'" id="backBtn">Zurück</button>
   </div>
 </div>
+
+<script>
+
+const translations = {
+  de: {
+    privacyTitle: "Datenschutz",
+    privacyText: "Keine persönlichen Daten werden gespeichert.",
+    backBtn: "Zurück"
+  },
+  en: {
+    privacyTitle: "Privacy",
+    privacyText: "No personal data is stored.",
+    backBtn: "Back"
+  }
+};
+
+function getLanguage() {
+  return localStorage.getItem('language') || 'de';
+}
+
+function updateLanguage() {
+  const lang = getLanguage();
+  const t = translations[lang];
+  
+  document.querySelectorAll('[id]').forEach(el => {
+    if(t[el.id]) {
+      el.textContent = t[el.id];
+    }
+  });
+  
+  document.documentElement.lang = lang;
+}
+
+function loadTheme() {
+  const theme = localStorage.getItem('theme') || 'blue';
+  const map={
+    blue:"#3996F9",
+    gray:"#888",
+    purple:"#b84dff",
+    red:"#ff4d4d",
+    green:"#4dff88",
+    orange:"#ff9f4d"
+  };
+  document.documentElement.style.setProperty("--accent", map[theme]);
+}
+
+window.addEventListener('load', () => {
+  loadTheme();
+  updateLanguage();
+});
+
+</script>
 
 </body>
 </html>

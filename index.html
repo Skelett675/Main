@@ -12,20 +12,31 @@
 <div class="glow"></div>
 
 <!-- SETTINGS -->
-<button class="gear" onclick="toggleSettings()">⚙</button>
+<button class="gear" onclick="toggleSettings()">⚙️</button>
 
 <div class="settings" id="settings">
 
-  <h3>Settings</h3>
+  <h3 id="settingsTitle">Einstellungen</h3>
 
-  <select onchange="setTheme(this.value)">
-    <option value="blue">Blau</option>
-    <option value="gray">Grau</option>
-    <option value="purple">Lila</option>
-    <option value="red">Rot</option>
-    <option value="green">Grün</option>
-    <option value="orange">Orange</option>
-  </select>
+  <div style="margin-top: 15px;">
+    <label id="languageLabel">Sprache:</label>
+    <div style="display: flex; gap: 10px; margin-top: 8px;">
+      <button class="lang-btn active" onclick="setLanguage('de')" style="flex: 1; padding: 8px; background: var(--accent);">🇩🇪 Deutsch</button>
+      <button class="lang-btn" onclick="setLanguage('en')" style="flex: 1; padding: 8px; background: rgba(255,255,255,0.1);">🇬🇧 English</button>
+    </div>
+  </div>
+
+  <div style="margin-top: 15px;">
+    <label id="themeLabel">Farbe:</label>
+    <select onchange="setTheme(this.value)" style="margin-top: 8px; width: 100%;">
+      <option value="blue">🔵 Blau / Blue</option>
+      <option value="gray">⚪ Grau / Gray</option>
+      <option value="purple">🟣 Lila / Purple</option>
+      <option value="red">🔴 Rot / Red</option>
+      <option value="green">🟢 Grün / Green</option>
+      <option value="orange">🟠 Orange / Orange</option>
+    </select>
+  </div>
 
 </div>
 
@@ -33,21 +44,21 @@
 <div class="container">
   <div class="card">
 
-    <h1>Main Website</h1>
-    <p>Willkommen</p>
+    <h1 id="mainTitle">Hauptseite</h1>
+    <p id="mainSubtitle">Willkommen</p>
 
-    <button onclick="location.href='info.html'">Infos</button>
-    <button onclick="location.href='contact.html'">Kontakt</button>
-    <button onclick="location.href='terms.html'">Terms</button>
-    <button onclick="location.href='privacy.html'">Privacy</button>
+    <button onclick="location.href='info.html'" id="btnInfo">Infos</button>
+    <button onclick="location.href='contact.html'" id="btnContact">Kontakt</button>
+    <button onclick="location.href='terms.html'" id="btnTerms">Nutzungsbedingungen</button>
+    <button onclick="location.href='privacy.html'" id="btnPrivacy">Datenschutz</button>
 
     <!-- QR -->
-    <button onclick="location.href='qr.html'">
+    <button onclick="location.href='qr.html'" id="btnQR">
       QR Generator
     </button>
 
     <!-- COLOR -->
-    <button onclick="location.href='color.html'">
+    <button onclick="location.href='color.html'" id="btnColor">
       Farbcode Generator
     </button>
 
@@ -56,11 +67,74 @@
 
 <script>
 
+const translations = {
+  de: {
+    settingsTitle: "Einstellungen",
+    languageLabel: "Sprache:",
+    themeLabel: "Farbe:",
+    mainTitle: "Hauptseite",
+    mainSubtitle: "Willkommen",
+    btnInfo: "Infos",
+    btnContact: "Kontakt",
+    btnTerms: "Nutzungsbedingungen",
+    btnPrivacy: "Datenschutz",
+    btnQR: "QR Generator",
+    btnColor: "Farbcode Generator"
+  },
+  en: {
+    settingsTitle: "Settings",
+    languageLabel: "Language:",
+    themeLabel: "Color:",
+    mainTitle: "Main Website",
+    mainSubtitle: "Welcome",
+    btnInfo: "Info",
+    btnContact: "Contact",
+    btnTerms: "Terms of Service",
+    btnPrivacy: "Privacy",
+    btnQR: "QR Generator",
+    btnColor: "Color Code Generator"
+  }
+};
+
+function getLanguage() {
+  return localStorage.getItem('language') || 'de';
+}
+
+function setLanguage(lang) {
+  localStorage.setItem('language', lang);
+  updateLanguage();
+  updateLanguageButtons();
+}
+
+function updateLanguageButtons() {
+  const lang = getLanguage();
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.remove('active');
+    btn.style.background = 'rgba(255,255,255,0.1)';
+  });
+  event.target.classList.add('active');
+  event.target.style.background = 'var(--accent)';
+}
+
+function updateLanguage() {
+  const lang = getLanguage();
+  const t = translations[lang];
+  
+  document.querySelectorAll('[id]').forEach(el => {
+    if(t[el.id]) {
+      el.textContent = t[el.id];
+    }
+  });
+  
+  document.documentElement.lang = lang;
+}
+
 function toggleSettings(){
   document.getElementById("settings").classList.toggle("show");
 }
 
 function setTheme(c){
+  localStorage.setItem('theme', c);
   const map={
     blue:"#3996F9",
     gray:"#888",
@@ -72,6 +146,25 @@ function setTheme(c){
 
   document.documentElement.style.setProperty("--accent", map[c]);
 }
+
+function loadTheme() {
+  const theme = localStorage.getItem('theme') || 'blue';
+  const map={
+    blue:"#3996F9",
+    gray:"#888",
+    purple:"#b84dff",
+    red:"#ff4d4d",
+    green:"#4dff88",
+    orange:"#ff9f4d"
+  };
+  document.documentElement.style.setProperty("--accent", map[theme]);
+  document.querySelector('select').value = theme;
+}
+
+window.addEventListener('load', () => {
+  loadTheme();
+  updateLanguage();
+});
 
 </script>
 
