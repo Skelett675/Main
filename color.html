@@ -20,6 +20,31 @@ body{
   background:
     radial-gradient(circle at top,#273b74,#0f1117 60%);
   color:white;
+  padding:20px;
+}
+
+.container{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.back-button{
+  align-self:flex-start;
+  margin-bottom:20px;
+  padding:12px 20px;
+  background:#3996F9;
+  color:black;
+  border:none;
+  border-radius:14px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.back-button:hover{
+  transform:translateX(-5px);
 }
 
 .card{
@@ -48,6 +73,8 @@ h2{
   margin:20px 0;
   border-radius:24px;
   background:rgba(255,255,255,.05);
+  white-space:pre-wrap;
+  word-wrap:break-word;
 }
 
 input,
@@ -66,11 +93,21 @@ select{
   color:white;
 }
 
+select option{
+  background:#1a1a1a;
+  color:white;
+}
+
 button{
   background:#3996F9;
   color:black;
   font-weight:bold;
   cursor:pointer;
+  transition:.2s;
+}
+
+button:hover{
+  opacity:0.9;
 }
 
 .row{
@@ -85,6 +122,31 @@ button{
   background:rgba(255,255,255,.08);
   padding:8px 12px;
   border-radius:12px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.row label:hover{
+  background:rgba(255,255,255,.12);
+}
+
+.settings-section{
+  margin-top:20px;
+  padding:15px;
+  background:rgba(0,0,0,.2);
+  border-radius:14px;
+}
+
+.settings-section h4{
+  margin:0 0 10px 0;
+  font-size:14px;
+  text-transform:uppercase;
+  opacity:0.7;
+}
+
+.settings-section input[type="color"]{
+  height:50px;
+  cursor:pointer;
 }
 
 .color-list{
@@ -93,6 +155,11 @@ button{
   justify-content:center;
   gap:14px;
   margin-top:15px;
+  margin-bottom:15px;
+  padding:15px;
+  background:rgba(0,0,0,.2);
+  border-radius:14px;
+  min-height:60px;
 }
 
 .color-box{
@@ -105,10 +172,23 @@ button{
   box-shadow:
     0 0 14px rgba(255,255,255,.1),
     inset 0 0 14px rgba(255,255,255,.1);
+  position:relative;
+  flex-shrink:0;
 }
 
 .color-box:hover{
   transform:scale(1.08);
+}
+
+.color-box::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:20px;
+  opacity:0;
+  transition:.2s;
 }
 
 .code{
@@ -119,53 +199,70 @@ button{
   color:#00ff66;
   font-family:monospace;
   word-break:break-word;
+  min-height:40px;
+  max-height:150px;
+  overflow-y:auto;
+}
+
+.copy-button{
+  margin-top:12px;
 }
 </style>
 </head>
 <body>
 
-<div class="card">
+<div class="container">
+  <button class="back-button" onclick="goHome()">← Zurück</button>
 
-  <h2>Color Generator</h2>
+  <div class="card">
 
-  <!-- PREVIEW GANZ OBEN -->
-  <div class="preview" id="preview">
-    Preview
+    <h2>Color Generator</h2>
+
+    <!-- PREVIEW GANZ OBEN -->
+    <div class="preview" id="preview">
+      Preview
+    </div>
+
+    <input
+      id="text"
+      placeholder="Text eingeben"
+      oninput="update()"
+    >
+
+    <select id="mode" onchange="update()">
+      <option value="single">Einfarbig</option>
+      <option value="gradient" selected>Gradient</option>
+      <option value="rainbow">Rainbow</option>
+    </select>
+
+    <div class="row">
+      <label><input type="checkbox" id="bold" onchange="update()"> Fett</label>
+      <label><input type="checkbox" id="italic" onchange="update()"> Kursiv</label>
+      <label><input type="checkbox" id="underline" onchange="update()"> Unterstrichen</label>
+      <label><input type="checkbox" id="strike" onchange="update()"> Durchgestrichen</label>
+    </div>
+
+    <div class="settings-section">
+      <h4>⚙️ Einstellungen</h4>
+      <label for="glowColor" style="display:block; margin-bottom:10px; text-align:left;">Glow Farbe:</label>
+      <input type="color" id="glowColor" value="#3996F9" onchange="update()">
+    </div>
+
+    <button onclick="addColor()">
+      🎨 Farbe hinzufügen
+    </button>
+
+    <div id="colorList" class="color-list"></div>
+
+    <div id="code" class="code">
+      Code
+    </div>
+
+    <button class="copy-button" onclick="copyCode()">
+      📋 Code kopieren
+    </button>
+
   </div>
-
-  <input
-    id="text"
-    placeholder="Text eingeben"
-    oninput="update()"
-  >
-
-  <select id="mode" onchange="update()">
-    <option value="single">Einfarbig</option>
-    <option value="gradient" selected>Gradient</option>
-    <option value="rainbow">Rainbow</option>
-  </select>
-
-  <div class="row">
-    <label><input type="checkbox" id="bold" onchange="update()"> Fett</label>
-    <label><input type="checkbox" id="italic" onchange="update()"> Kursiv</label>
-    <label><input type="checkbox" id="underline" onchange="update()"> Unterstrichen</label>
-    <label><input type="checkbox" id="strike" onchange="update()"> Durchgestrichen</label>
-  </div>
-
-  <button onclick="addColor()">
-    🎨 Farbe hinzufügen
-  </button>
-
-  <div id="colorList" class="color-list"></div>
-
-  <div id="code" class="code">
-    Code
-  </div>
-
-  <button onclick="copyCode()">
-    📋 Copy
-  </button>
-
 </div>
 
 <script>
@@ -182,10 +279,22 @@ function randomColor(){
       .padStart(6,"0");
 }
 
+function goHome(){
+  window.location.href = "index.html";
+}
+
 function addColor(){
   colors.push(randomColor());
   renderColors();
   update();
+}
+
+function removeColor(index){
+  if(colors.length > 1){
+    colors.splice(index, 1);
+    renderColors();
+    update();
+  }
 }
 
 function renderColors(){
@@ -202,8 +311,9 @@ function renderColors(){
 
     box.className = "color-box";
     box.style.background = color;
+    box.title = "Klick zum ändern\nRechtsklick zum löschen";
 
-    box.onclick = ()=>{
+    box.onclick = (e)=>{
 
       const picker =
         document.createElement("input");
@@ -211,8 +321,7 @@ function renderColors(){
       picker.type = "color";
       picker.value = color;
 
-      picker.style.position = "fixed";
-      picker.style.left = "-9999px";
+      picker.style.display = "none";
 
       document.body.appendChild(picker);
 
@@ -222,15 +331,16 @@ function renderColors(){
         update();
       };
 
-      if(picker.showPicker){
-        picker.showPicker();
-      }else{
-        picker.click();
-      }
-
       picker.onchange = ()=>{
         picker.remove();
       };
+
+      picker.click();
+    };
+
+    box.oncontextmenu = (e)=>{
+      e.preventDefault();
+      removeColor(index);
     };
 
     list.appendChild(box);
@@ -282,6 +392,9 @@ function update(){
   const code =
     document.getElementById("code");
 
+  const glowColor =
+    document.getElementById("glowColor").value;
+
   const bold =
     document.getElementById("bold").checked
       ? "&l" : "";
@@ -323,6 +436,9 @@ function update(){
 
   preview.style.textDecoration =
     deco.join(" ");
+
+  preview.style.boxShadow =
+    `0 0 40px ${glowColor}40, inset 0 0 20px ${glowColor}20`;
 
   let out = "";
 
@@ -454,9 +570,16 @@ function update(){
 
 function copyCode(){
 
-  navigator.clipboard.writeText(
-    document.getElementById("code").innerText
-  );
+  const code = document.getElementById("code").innerText;
+  
+  navigator.clipboard.writeText(code).then(()=>{
+    const btn = event.target;
+    const original = btn.innerText;
+    btn.innerText = "✓ Kopiert!";
+    setTimeout(()=>{
+      btn.innerText = original;
+    }, 2000);
+  });
 }
 
 window.onload = ()=>{
