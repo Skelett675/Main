@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -15,13 +16,14 @@
 }
 
 .card{
-  width:500px;
+  width:550px;
   padding:35px;
   border-radius:30px;
   background:rgba(255,255,255,0.06);
   backdrop-filter:blur(25px);
   text-align:center;
   color:white;
+  box-shadow:0 0 35px rgba(57,150,249,0.25);
 }
 
 input,select{
@@ -34,7 +36,6 @@ input,select{
   color:white;
 }
 
-/* PREVIEW */
 .preview{
   margin-top:20px;
   padding:25px;
@@ -45,9 +46,9 @@ input,select{
   justify-content:center;
   align-items:center;
   font-size:26px;
+  font-weight:bold;
 }
 
-/* OUTPUT */
 .code{
   margin-top:10px;
   padding:15px;
@@ -58,13 +59,12 @@ input,select{
   word-break:break-word;
 }
 
-/* ROW */
 .row{
   display:flex;
   flex-wrap:wrap;
   gap:10px;
   justify-content:center;
-  margin-top:10px;
+  margin-top:15px;
 }
 
 label{
@@ -73,9 +73,8 @@ label{
   border-radius:12px;
 }
 
-/* BUTTON */
 button{
-  margin-top:10px;
+  margin-top:15px;
   width:100%;
   padding:12px;
   border-radius:16px;
@@ -84,160 +83,360 @@ button{
   color:black;
   font-weight:bold;
   cursor:pointer;
+  transition:0.2s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+}
+
+.color-list{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:12px;
+  margin-top:15px;
+}
+
+.color-box{
+  width:55px;
+  height:55px;
+  border-radius:14px;
+  border:2px solid rgba(255,255,255,0.15);
+  cursor:pointer;
+  transition:0.2s;
+  box-shadow:
+    0 0 12px rgba(255,255,255,0.08),
+    inset 0 0 12px rgba(255,255,255,0.08);
+}
+
+.color-box:hover{
+  transform:scale(1.08);
+  box-shadow:
+    0 0 20px rgba(255,255,255,0.2);
 }
 </style>
 
 </head>
-
 <body>
 
 <div class="glow"></div>
 
 <div class="container">
-  <div class="card">
+<div class="card">
 
-    <h2>Color Generator</h2>
+<h2>Color Generator</h2>
 
-    <input type="text" id="text" placeholder="Text eingeben" oninput="update()">
+<input type="text"
+id="text"
+placeholder="Text eingeben"
+oninput="update()">
 
-    <!-- 🔥 DEFAULT = GRADIENT -->
-    <select id="mode" onchange="update()">
-      <option value="single">Einfarbig</option>
-      <option value="gradient" selected>Gradient</option>
-      <option value="rainbow">Rainbow</option>
-    </select>
+<select id="mode" onchange="update()">
+  <option value="single">Einfarbig</option>
+  <option value="gradient" selected>Gradient</option>
+  <option value="rainbow">Rainbow</option>
+</select>
 
-    <label>Farb-Stärke</label>
-    <input type="range" id="strength" min="1" max="5" value="3" oninput="update()">
+<div class="row">
+<label><input type="checkbox" id="bold" onchange="update()"> Fett</label>
+<label><input type="checkbox" id="italic" onchange="update()"> Kursiv</label>
+<label><input type="checkbox" id="underline" onchange="update()"> Unterstrichen</label>
+<label><input type="checkbox" id="strike" onchange="update()"> Durchgestrichen</label>
+</div>
 
-    <!-- FORMAT -->
-    <div class="row">
-      <label><input type="checkbox" id="bold" onchange="update()"> Fett</label>
-      <label><input type="checkbox" id="italic" onchange="update()"> Kursiv</label>
-      <label><input type="checkbox" id="underline" onchange="update()"> Unterstrichen</label>
-      <label><input type="checkbox" id="strike" onchange="update()"> Durchgestrichen</label>
-    </div>
+<button onclick="addColor()">
+🎨 Farbe hinzufügen
+</button>
 
-    <!-- PREVIEW -->
-    <div class="preview" id="preview">Preview</div>
+<div id="colorList"
+class="color-list"></div>
 
-    <!-- OUTPUT -->
-    <div class="code" id="code">Code</div>
+<div class="preview" id="preview">
+Preview
+</div>
 
-    <button onclick="copy()">Copy</button>
+<div class="code" id="code">
+Code
+</div>
 
-  </div>
+<button onclick="copy()">
+📋 Copy
+</button>
+
+</div>
 </div>
 
 <script>
 
-function boostColor(hex, factor){
+let colors = [
+  randomColor(),
+  randomColor()
+];
 
-  let c = hex.replace("#","");
-  let r = parseInt(c.substring(0,2),16);
-  let g = parseInt(c.substring(2,4),16);
-  let b = parseInt(c.substring(4,6),16);
+function randomColor(){
+  return "#" +
+  Math.floor(Math.random()*16777215)
+  .toString(16)
+  .padStart(6,"0");
+}
 
-  r = Math.min(255, Math.floor(r * factor));
-  g = Math.min(255, Math.floor(g * factor));
-  b = Math.min(255, Math.floor(b * factor));
+function renderColors(){
+
+  const list =
+  document.getElementById("colorList");
+
+  list.innerHTML = "";
+
+  colors.forEach((color,index)=>{
+
+    const box =
+    document.createElement("div");
+
+    box.className =
+    "color-box";
+
+    box.style.background =
+    color;
+
+    box.onclick = ()=>{
+
+      const picker =
+      document.createElement("input");
+
+      picker.type =
+      "color";
+
+      picker.value =
+      color;
+
+      picker.oninput =
+      e=>{
+
+        colors[index] =
+        e.target.value;
+
+        renderColors();
+        update();
+      };
+
+      picker.click();
+    };
+
+    list.appendChild(box);
+
+  });
+}
+
+function addColor(){
+
+  colors.push(
+    randomColor()
+  );
+
+  renderColors();
+  update();
+}
+
+function boostColor(hex,factor){
+
+  let c =
+  hex.replace("#","");
+
+  let r =
+  parseInt(c.substring(0,2),16);
+
+  let g =
+  parseInt(c.substring(2,4),16);
+
+  let b =
+  parseInt(c.substring(4,6),16);
+
+  r =
+  Math.min(255,
+  Math.floor(r*factor));
+
+  g =
+  Math.min(255,
+  Math.floor(g*factor));
+
+  b =
+  Math.min(255,
+  Math.floor(b*factor));
 
   return `rgb(${r},${g},${b})`;
 }
 
 function update(){
 
-  const text = document.getElementById("text").value || "Preview";
-  const mode = document.getElementById("mode").value;
-  const strength = document.getElementById("strength").value;
+  const text =
+  document.getElementById("text")
+  .value || "Preview";
 
-  const preview = document.getElementById("preview");
-  const code = document.getElementById("code");
+  const mode =
+  document.getElementById("mode")
+  .value;
 
-  const bold = document.getElementById("bold").checked ? "&l" : "";
-  const italic = document.getElementById("italic").checked ? "&o" : "";
-  const underline = document.getElementById("underline").checked ? "&n" : "";
-  const strike = document.getElementById("strike").checked ? "&m" : "";
+  const preview =
+  document.getElementById("preview");
 
-  let format = bold + italic + underline + strike;
+  const code =
+  document.getElementById("code");
+
+  const bold =
+  document.getElementById("bold")
+  .checked ? "&l" : "";
+
+  const italic =
+  document.getElementById("italic")
+  .checked ? "&o" : "";
+
+  const underline =
+  document.getElementById("underline")
+  .checked ? "&n" : "";
+
+  const strike =
+  document.getElementById("strike")
+  .checked ? "&m" : "";
+
+  let format =
+  bold + italic +
+  underline + strike;
 
   let out = "";
 
-  /* PREVIEW RESET */
-  preview.innerText = text;
-  preview.style.background = "";
-  preview.style.webkitBackgroundClip = "unset";
-  preview.style.color = "white";
+  preview.innerText =
+  text;
 
-  preview.style.fontWeight = "normal";
-  preview.style.fontStyle = "normal";
-  preview.style.textDecoration = "none";
+  preview.style.background =
+  "";
 
-  if(document.getElementById("bold").checked)
-    preview.style.fontWeight = "bold";
+  preview.style.color =
+  "white";
 
-  if(document.getElementById("italic").checked)
-    preview.style.fontStyle = "italic";
+  preview.style.webkitBackgroundClip =
+  "unset";
+
+  preview.style.fontWeight =
+  document.getElementById("bold")
+  .checked ? "bold" : "normal";
+
+  preview.style.fontStyle =
+  document.getElementById("italic")
+  .checked ? "italic" : "normal";
 
   let deco = [];
-  if(document.getElementById("underline").checked) deco.push("underline");
-  if(document.getElementById("strike").checked) deco.push("line-through");
-  preview.style.textDecoration = deco.join(" ");
 
-  /* SINGLE */
-  if(mode === "single"){
-    preview.style.color = "#3996F9";
-    out = `&#3996F9${format}${text}`;
+  if(
+  document.getElementById("underline")
+  .checked
+  ) deco.push("underline");
+
+  if(
+  document.getElementById("strike")
+  .checked
+  ) deco.push("line-through");
+
+  preview.style.textDecoration =
+  deco.join(" ");
+
+  if(mode==="single"){
+
+    preview.style.color =
+    colors[0];
+
+    out =
+    `&#${colors[0].replace("#","")}${format}${text}`;
   }
 
-  /* GRADIENT */
-  if(mode === "gradient"){
-
-    const colors = ["#3996F9","#00ffcc","#ff4dff","#ffff00"];
-    const factor = 1 + (strength * 0.3);
-
-    let boosted = colors.map(c => boostColor(c,factor));
+  if(mode==="gradient"){
 
     preview.style.background =
-      `linear-gradient(90deg,${boosted.join(",")})`;
+    `linear-gradient(
+      90deg,
+      ${colors.join(",")}
+    )`;
 
-    preview.style.webkitBackgroundClip = "text";
-    preview.style.color = "transparent";
+    preview.style.webkitBackgroundClip =
+    "text";
 
-    for(let i=0;i<text.length;i++){
-      out += `&#${colors[i % colors.length].replace("#","")}${format}${text[i]}`;
+    preview.style.color =
+    "transparent";
+
+    for(
+      let i=0;
+      i<text.length;
+      i++
+    ){
+
+      out +=
+      `&#${
+      colors[
+      i % colors.length
+      ].replace("#","")
+      }${format}${text[i]}`;
     }
   }
 
-  /* RAINBOW */
-  if(mode === "rainbow"){
+  if(mode==="rainbow"){
 
-    const base = ["#ff0000","#ff7a00","#ffee00","#00ff4c","#00e5ff","#004cff","#b300ff"];
-    const factor = 1 + (strength * 0.3);
-
-    let boosted = base.map(c => boostColor(c,factor));
+    const rainbow = [
+      "#ff0000",
+      "#ff7a00",
+      "#ffee00",
+      "#00ff4c",
+      "#00e5ff",
+      "#004cff",
+      "#b300ff"
+    ];
 
     preview.style.background =
-      `linear-gradient(90deg,${boosted.join(",")})`;
+    `linear-gradient(
+      90deg,
+      ${rainbow.join(",")}
+    )`;
 
-    preview.style.webkitBackgroundClip = "text";
-    preview.style.color = "transparent";
+    preview.style.webkitBackgroundClip =
+    "text";
 
-    for(let i=0;i<text.length;i++){
-      out += `&#${base[i % base.length].replace("#","")}${format}${text[i]}`;
+    preview.style.color =
+    "transparent";
+
+    for(
+      let i=0;
+      i<text.length;
+      i++
+    ){
+
+      out +=
+      `&#${
+      rainbow[
+      i % rainbow.length
+      ].replace("#","")
+      }${format}${text[i]}`;
     }
   }
 
-  code.innerText = out;
+  code.innerText =
+  out;
 }
 
 function copy(){
-  navigator.clipboard.writeText(document.getElementById("code").innerText);
+  navigator.clipboard.writeText(
+    document.getElementById("code")
+    .innerText
+  );
 }
 
-window.onload = update;
+window.onload = ()=>{
+
+  renderColors();
+  update();
+
+};
 
 </script>
 
 </body>
 </html>
+```
