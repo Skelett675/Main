@@ -75,6 +75,9 @@ h2{
   background:rgba(255,255,255,.05);
   white-space:pre-wrap;
   word-wrap:break-word;
+  background-size:300% 300%;
+  -webkit-background-clip:text;
+  background-clip:text;
 }
 
 input,
@@ -444,7 +447,9 @@ function update(){
 
   if(mode==="single"){
 
-    preview.style.background = "";
+    preview.style.background = colors[0];
+    preview.style.webkitBackgroundClip = "unset";
+    preview.style.backgroundClip = "unset";
     preview.style.color = colors[0];
 
     out =
@@ -463,6 +468,9 @@ function update(){
       "300% 300%";
 
     preview.style.webkitBackgroundClip =
+      "text";
+      
+    preview.style.backgroundClip =
       "text";
 
     preview.style.color =
@@ -523,6 +531,9 @@ function update(){
       )`;
 
     preview.style.webkitBackgroundClip =
+      "text";
+      
+    preview.style.backgroundClip =
       "text";
 
     preview.style.color =
