@@ -18,14 +18,16 @@
 }
 
 .card{
-  width:480px;
+  width:520px;
   padding:35px;
   border-radius:30px;
   background:rgba(255,255,255,0.06);
   backdrop-filter:blur(25px);
   text-align:center;
+  color:white;
 }
 
+/* INPUT */
 input{
   width:100%;
   padding:12px;
@@ -36,49 +38,82 @@ input{
   color:white;
 }
 
-#qr-container{
-  margin-top:20px;
-  width:250px;
-  height:250px;
+/* DROPZONE */
+.dropzone{
+  margin-top:12px;
+  padding:14px;
+  border-radius:16px;
 
-  margin-left:auto;
-  margin-right:auto;
+  border:2px solid rgba(57,150,249,0.6);
+  background:rgba(255,255,255,0.03);
 
-  background:#ffffff;
-  border-radius:20px;
+  cursor:pointer;
+  transition:0.25s ease;
+  text-align:center;
+}
 
+.dropzone:hover{
+  border-color:#3996F9;
+  box-shadow:0 0 12px #3996F9;
+  transform:scale(1.02);
+}
+
+/* TEXT IN DROPZONE */
+.drop-title{
+  font-size:14px;
+  font-weight:bold;
+  color:#fff;
+}
+
+.drop-sub{
+  font-size:12px;
+  opacity:0.7;
+  margin-top:4px;
+}
+
+/* QR WRAPPER */
+#qr-wrapper{
+  margin-top:25px;
   display:flex;
   justify-content:center;
   align-items:center;
+
+  padding:30px;
+  border-radius:35px;
+
+  background:rgba(255,255,255,0.05);
+  box-shadow:0 0 35px rgba(57,150,249,0.4);
 }
 
-#qrcode canvas,
-#qrcode img{
-  opacity:1 !important;
-  filter:none !important;
+/* QR BOX */
+#qr-container{
+  position:relative;
+  display:inline-block;
+  background:#fff;
+  padding:10px;
+  border-radius:18px;
 }
 
-.style-row{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:10px;
-  margin-top:15px;
-}
-
-.style-row button{
-  padding:8px 12px;
+/* LOGO */
+#logo{
+  position:absolute;
+  width:60px;
+  height:60px;
   border-radius:14px;
-  border:none;
-  cursor:pointer;
+  object-fit:cover;
+
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+
+  pointer-events:none;
+  display:none;
+
+  box-shadow:0 0 15px rgba(0,0,0,0.3);
 }
 
-.style-row button.active{
-  background:#3996F9;
-  box-shadow:0 0 15px #3996F9;
-}
-
-.main{
+/* BUTTON */
+button{
   width:100%;
   margin-top:15px;
   padding:12px;
@@ -88,6 +123,13 @@ input{
   color:black;
   font-weight:bold;
   cursor:pointer;
+}
+
+/* SMALL TEXT */
+.small{
+  font-size:12px;
+  opacity:0.7;
+  margin-top:8px;
 }
 </style>
 
@@ -105,24 +147,28 @@ input{
 <input
 type="text"
 id="text"
-placeholder="Text oder Link eingeben"
+placeholder="Text oder Link"
 oninput="generateQR()"
 >
 
-<div class="style-row">
-<button onclick="setStyle(this)" class="active">Classic</button>
-<button onclick="setStyle(this)">Rounded</button>
-<button onclick="setStyle(this)">Soft</button>
-<button onclick="setStyle(this)">Extra</button>
+<!-- DROPZONE FIX -->
+<div class="dropzone" onclick="document.getElementById('file').click()">
+
+  <div class="drop-title">📁 Drag & Drop</div>
+  <div class="drop-sub">oder klicken um ein Logo hinzuzufügen</div>
+
+  <input type="file" id="file" hidden onchange="loadLogo(event)">
 </div>
 
-<div id="qr-container">
-<div id="qrcode"></div>
+<p class="small">Logo wird automatisch mittig platziert</p>
+
+<!-- QR -->
+<div id="qr-wrapper">
+  <div id="qr-container"></div>
+  <img id="logo">
 </div>
 
-<button class="main" onclick="downloadQR()">
-Download QR
-</button>
+<button onclick="downloadQR()">Download QR</button>
 
 </div>
 </div>
@@ -137,50 +183,62 @@ function generateQR(){
     document.getElementById("text").value;
 
   const box =
-    document.getElementById("qrcode");
-
-  box.innerHTML = "";
+    document.getElementById("qr-container");
 
   if(!text) return;
+
+  box.innerHTML = "";
 
   qr = new QRCode(box,{
     text:text,
     width:220,
     height:220,
-    colorDark:"#000000",
-    colorLight:"#ffffff",
+    colorDark:"#000",
+    colorLight:"#fff",
     correctLevel:QRCode.CorrectLevel.H
   });
 
 }
 
-function setStyle(btn){
+/* LOGO UPLOAD */
+function loadLogo(event){
 
-  document
-  .querySelectorAll(".style-row button")
-  .forEach(b=>b.classList.remove("active"));
+  const file = event.target.files[0];
+  if(!file) return;
 
-  btn.classList.add("active");
+  const reader = new FileReader();
 
+  reader.onload = function(e){
+
+    const logo =
+      document.getElementById("logo");
+
+    logo.src = e.target.result;
+    logo.style.display = "block";
+
+  };
+
+  reader.readAsDataURL(file);
 }
 
+/* DOWNLOAD */
 function downloadQR(){
 
-  const qr =
-    document.getElementById("qrcode");
+  const wrapper =
+    document.getElementById("qr-wrapper");
 
-  html2canvas(qr,{
+  html2canvas(wrapper,{
     backgroundColor:"#ffffff",
     scale:3,
     useCORS:true
-  })
-  .then(canvas=>{
+  }).then(canvas=>{
 
     const a =
       document.createElement("a");
 
     a.download = "qr.png";
     a.href = canvas.toDataURL("image/png");
+
     a.click();
 
   });
