@@ -6,8 +6,8 @@
 
 <link rel="stylesheet" href="style.css">
 
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
 .container{
@@ -17,112 +17,75 @@
   align-items:center;
 }
 
-/* 🔥 SAME STYLE LIKE COLOR TOOL */
 .card{
-  width:460px;
+  width:480px;
   padding:35px;
   border-radius:30px;
-
   background:rgba(255,255,255,0.06);
   backdrop-filter:blur(25px);
-
   text-align:center;
-
-  box-shadow:0 0 40px rgba(57,150,249,0.15);
 }
 
-/* INPUT */
 input{
   width:100%;
   padding:12px;
   margin-top:10px;
-
   border-radius:14px;
   border:none;
-
   background:rgba(0,0,0,0.4);
   color:white;
 }
 
-/* DROP */
-.dropzone{
-  margin-top:10px;
-  padding:18px;
-
-  border:2px dashed rgba(255,255,255,0.25);
-  border-radius:18px;
-
-  cursor:pointer;
-
-  transition:0.3s;
-}
-
-.dropzone:hover{
-  border-color:#3996F9;
-  box-shadow:0 0 25px #3996F9;
-}
-
-/* QR BOX */
 #qr-container{
   margin-top:20px;
-
-  width:220px;
-  height:220px;
+  width:250px;
+  height:250px;
 
   margin-left:auto;
   margin-right:auto;
 
-  background:white;
-  border-radius:18px;
-
-  position:relative;
+  background:#ffffff;
+  border-radius:20px;
 
   display:flex;
   justify-content:center;
   align-items:center;
-
-  transition:0.4s;
 }
 
-/* ANIMATION */
-.qr-anim{
-  transform:scale(0.7);
-  opacity:0;
-  animation:pop 0.5s forwards;
+#qrcode canvas,
+#qrcode img{
+  opacity:1 !important;
+  filter:none !important;
 }
 
-@keyframes pop{
-  to{
-    transform:scale(1);
-    opacity:1;
-  }
+.style-row{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+  margin-top:15px;
 }
 
-/* LOGO */
-#logo{
-  position:absolute;
-  border-radius:12px;
-  object-fit:cover;
-  z-index:10;
+.style-row button{
+  padding:8px 12px;
+  border-radius:14px;
+  border:none;
+  cursor:pointer;
 }
 
-/* SLIDER */
-input[type=range]{
-  margin-top:10px;
+.style-row button.active{
+  background:#3996F9;
+  box-shadow:0 0 15px #3996F9;
 }
 
-/* BUTTON */
-button{
-  margin-top:10px;
+.main{
   width:100%;
+  margin-top:15px;
   padding:12px;
-
   border-radius:16px;
   border:none;
-
   background:#3996F9;
   color:black;
-
   font-weight:bold;
   cursor:pointer;
 }
@@ -135,117 +98,89 @@ button{
 <div class="glow"></div>
 
 <div class="container">
-  <div class="card">
+<div class="card">
 
-    <h2>QR Generator Pro</h2>
+<h2>QR Generator Pro</h2>
 
-    <input type="text" id="text" placeholder="Text / Link" oninput="generateQR()">
+<input
+type="text"
+id="text"
+placeholder="Text oder Link eingeben"
+oninput="generateQR()"
+>
 
-    <!-- DROP LOGO -->
-    <div class="dropzone" ondrop="dropHandler(event)" ondragover="event.preventDefault()">
-      Logo hier reinziehen / klicken
-      <input type="file" id="file" accept="image/*" hidden onchange="loadFile(event)">
-    </div>
+<div class="style-row">
+<button onclick="setStyle(this)" class="active">Classic</button>
+<button onclick="setStyle(this)">Rounded</button>
+<button onclick="setStyle(this)">Soft</button>
+<button onclick="setStyle(this)">Extra</button>
+</div>
 
-    <!-- LOGO SIZE -->
-    <label>Logo Größe</label>
-    <input type="range" min="30" max="120" value="55" oninput="resizeLogo(this.value)">
+<div id="qr-container">
+<div id="qrcode"></div>
+</div>
 
-    <!-- QR -->
-    <div id="qr-container">
-      <div id="qrcode"></div>
-      <img id="logo" style="display:none;">
-    </div>
+<button class="main" onclick="downloadQR()">
+Download QR
+</button>
 
-    <button onclick="downloadQR()">Download QR</button>
-
-  </div>
+</div>
 </div>
 
 <script>
 
 let qr;
 
-/* QR GENERATE + ANIMATION */
 function generateQR(){
 
-  const text = document.getElementById("text").value;
-  const container = document.getElementById("qrcode");
-  const qrBox = document.getElementById("qr-container");
+  const text =
+    document.getElementById("text").value;
 
-  container.innerHTML = "";
+  const box =
+    document.getElementById("qrcode");
+
+  box.innerHTML = "";
 
   if(!text) return;
 
-  qr = new QRCode(container, {
+  qr = new QRCode(box,{
     text:text,
     width:220,
     height:220,
-    colorDark:"#000",
-    colorLight:"#fff",
+    colorDark:"#000000",
+    colorLight:"#ffffff",
     correctLevel:QRCode.CorrectLevel.H
   });
 
-  /* 🔥 animation reset */
-  qrBox.classList.remove("qr-anim");
-  void qrBox.offsetWidth;
-  qrBox.classList.add("qr-anim");
 }
 
-/* LOGO UPLOAD */
-document.querySelector(".dropzone").onclick = () => {
-  document.getElementById("file").click();
-};
+function setStyle(btn){
 
-function loadFile(e){
-  const file = e.target.files[0];
-  const reader = new FileReader();
+  document
+  .querySelectorAll(".style-row button")
+  .forEach(b=>b.classList.remove("active"));
 
-  reader.onload = evt => {
-    const img = document.getElementById("logo");
-    img.src = evt.target.result;
-    img.style.display = "block";
-    resizeLogo(55);
-  };
+  btn.classList.add("active");
 
-  reader.readAsDataURL(file);
 }
 
-/* DROP */
-function dropHandler(ev){
-  ev.preventDefault();
-
-  const file = ev.dataTransfer.files[0];
-  const reader = new FileReader();
-
-  reader.onload = evt => {
-    const img = document.getElementById("logo");
-    img.src = evt.target.result;
-    img.style.display = "block";
-    resizeLogo(55);
-  };
-
-  reader.readAsDataURL(file);
-}
-
-/* LOGO RESIZE SLIDER */
-function resizeLogo(size){
-  const img = document.getElementById("logo");
-  img.style.width = size + "px";
-  img.style.height = size + "px";
-}
-
-/* DOWNLOAD FIX */
 function downloadQR(){
 
-  html2canvas(document.getElementById("qr-container"), {
-    useCORS:true,
-    backgroundColor:"#ffffff"
-  }).then(canvas => {
+  const qr =
+    document.getElementById("qrcode");
 
-    let a=document.createElement("a");
-    a.download="qr.png";
-    a.href=canvas.toDataURL("image/png");
+  html2canvas(qr,{
+    backgroundColor:"#ffffff",
+    scale:3,
+    useCORS:true
+  })
+  .then(canvas=>{
+
+    const a =
+      document.createElement("a");
+
+    a.download = "qr.png";
+    a.href = canvas.toDataURL("image/png");
     a.click();
 
   });
