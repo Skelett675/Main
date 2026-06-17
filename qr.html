@@ -2,14 +2,20 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>QR Generator Pro</title>
-
-<link rel="stylesheet" href="style.css">
+<title>QR Generator</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
+
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0c0d10;
+  color:white;
+}
+
 .container{
   min-height:100vh;
   display:flex;
@@ -18,13 +24,12 @@
 }
 
 .card{
-  width:520px;
-  padding:35px;
-  border-radius:30px;
+  width:480px;
+  padding:30px;
+  border-radius:25px;
   background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(25px);
+  backdrop-filter:blur(20px);
   text-align:center;
-  color:white;
 }
 
 /* INPUT */
@@ -32,216 +37,100 @@ input{
   width:100%;
   padding:12px;
   margin-top:10px;
-  border-radius:14px;
+  border-radius:12px;
   border:none;
-  background:rgba(0,0,0,0.4);
+  background:#111;
   color:white;
 }
 
-/* DROPZONE */
-.dropzone{
-  margin-top:12px;
-  padding:14px;
-  border-radius:16px;
-
-  border:2px solid rgba(57,150,249,0.6);
-  background:rgba(255,255,255,0.03);
-
-  cursor:pointer;
-  transition:0.25s ease;
-  text-align:center;
-}
-
-.dropzone:hover{
-  border-color:#3996F9;
-  box-shadow:0 0 12px #3996F9;
-  transform:scale(1.02);
-}
-
-/* TEXT IN DROPZONE */
-.drop-title{
-  font-size:14px;
-  font-weight:bold;
-  color:#fff;
-}
-
-.drop-sub{
-  font-size:12px;
-  opacity:0.7;
-  margin-top:4px;
-}
-
-/* QR WRAPPER */
+/* QR WRAPPER CENTRING FIX */
 #qr-wrapper{
-  margin-top:25px;
+  margin-top:20px;
   display:flex;
   justify-content:center;
   align-items:center;
 
   padding:30px;
-  border-radius:35px;
-
+  border-radius:25px;
   background:rgba(255,255,255,0.05);
-  box-shadow:0 0 35px rgba(57,150,249,0.4);
+  box-shadow:0 0 25px rgba(57,150,249,0.3);
 }
 
-/* QR BOX */
-#qr-container{
-  position:relative;
-  display:inline-block;
-  background:#fff;
-  padding:10px;
-  border-radius:18px;
+/* QR CENTER FIX */
+#qr{
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-/* LOGO */
-#logo{
-  position:absolute;
-  width:60px;
-  height:60px;
-  border-radius:14px;
-  object-fit:cover;
-
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-
-  pointer-events:none;
-  display:none;
-
-  box-shadow:0 0 15px rgba(0,0,0,0.3);
-}
-
-/* BUTTON */
 button{
   width:100%;
   margin-top:15px;
   padding:12px;
-  border-radius:16px;
+  border-radius:14px;
   border:none;
   background:#3996F9;
-  color:black;
   font-weight:bold;
   cursor:pointer;
 }
 
-/* SMALL TEXT */
-.small{
-  font-size:12px;
-  opacity:0.7;
-  margin-top:8px;
-}
 </style>
 
 </head>
 
 <body>
 
-<div class="glow"></div>
-
 <div class="container">
 <div class="card">
 
-<h2>QR Generator Pro</h2>
+<h2>QR Generator</h2>
 
-<input
-type="text"
-id="text"
-placeholder="Text oder Link"
-oninput="generateQR()"
->
+<input id="text" placeholder="Text" oninput="generateQR()">
 
-<!-- DROPZONE FIX -->
-<div class="dropzone" onclick="document.getElementById('file').click()">
-
-  <div class="drop-title">📁 Drag & Drop</div>
-  <div class="drop-sub">oder klicken um ein Logo hinzuzufügen</div>
-
-  <input type="file" id="file" hidden onchange="loadLogo(event)">
-</div>
-
-<p class="small">Logo wird automatisch mittig platziert</p>
-
-<!-- QR -->
 <div id="qr-wrapper">
-  <div id="qr-container"></div>
-  <img id="logo">
+  <div id="qr"></div>
 </div>
 
-<button onclick="downloadQR()">Download QR</button>
+<button onclick="downloadQR()">Download</button>
 
 </div>
 </div>
 
 <script>
 
-let qr;
-
 function generateQR(){
 
-  const text =
-    document.getElementById("text").value;
+const text = document.getElementById("text").value;
+const box = document.getElementById("qr");
 
-  const box =
-    document.getElementById("qr-container");
+if(!text) return;
 
-  if(!text) return;
+box.innerHTML="";
 
-  box.innerHTML = "";
-
-  qr = new QRCode(box,{
-    text:text,
-    width:220,
-    height:220,
-    colorDark:"#000",
-    colorLight:"#fff",
-    correctLevel:QRCode.CorrectLevel.H
-  });
+new QRCode(box,{
+text:text,
+width:220,
+height:220,
+colorDark:"#000",
+colorLight:"#fff",
+correctLevel:QRCode.CorrectLevel.H
+});
 
 }
 
-/* LOGO UPLOAD */
-function loadLogo(event){
-
-  const file = event.target.files[0];
-  if(!file) return;
-
-  const reader = new FileReader();
-
-  reader.onload = function(e){
-
-    const logo =
-      document.getElementById("logo");
-
-    logo.src = e.target.result;
-    logo.style.display = "block";
-
-  };
-
-  reader.readAsDataURL(file);
-}
-
-/* DOWNLOAD */
 function downloadQR(){
 
-  const wrapper =
-    document.getElementById("qr-wrapper");
+html2canvas(document.getElementById("qr-wrapper"),{
+backgroundColor:"#fff",
+scale:3
+}).then(canvas=>{
 
-  html2canvas(wrapper,{
-    backgroundColor:"#ffffff",
-    scale:3,
-    useCORS:true
-  }).then(canvas=>{
+const a=document.createElement("a");
+a.download="qr.png";
+a.href=canvas.toDataURL("image/png");
+a.click();
 
-    const a =
-      document.createElement("a");
-
-    a.download = "qr.png";
-    a.href = canvas.toDataURL("image/png");
-
-    a.click();
-
-  });
+});
 
 }
 
