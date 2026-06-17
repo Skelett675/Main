@@ -45,7 +45,6 @@ input,select{
   justify-content:center;
   align-items:center;
   font-size:26px;
-  font-weight:bold;
 }
 
 /* OUTPUT */
@@ -99,19 +98,19 @@ button{
 
     <h2>Color Generator</h2>
 
-    <input type="text" id="text" placeholder="Text" oninput="update()">
+    <input type="text" id="text" placeholder="Text eingeben" oninput="update()">
 
+    <!-- 🔥 DEFAULT = GRADIENT -->
     <select id="mode" onchange="update()">
       <option value="single">Einfarbig</option>
-      <option value="gradient">Gradient</option>
+      <option value="gradient" selected>Gradient</option>
       <option value="rainbow">Rainbow</option>
     </select>
 
-    <!-- 🔥 STÄRKE -->
     <label>Farb-Stärke</label>
     <input type="range" id="strength" min="1" max="5" value="3" oninput="update()">
 
-    <!-- 🎨 FORMAT -->
+    <!-- FORMAT -->
     <div class="row">
       <label><input type="checkbox" id="bold" onchange="update()"> Fett</label>
       <label><input type="checkbox" id="italic" onchange="update()"> Kursiv</label>
@@ -122,7 +121,7 @@ button{
     <!-- PREVIEW -->
     <div class="preview" id="preview">Preview</div>
 
-    <!-- CODE -->
+    <!-- OUTPUT -->
     <div class="code" id="code">Code</div>
 
     <button onclick="copy()">Copy</button>
@@ -164,18 +163,34 @@ function update(){
 
   let out = "";
 
+  /* PREVIEW RESET */
   preview.innerText = text;
   preview.style.background = "";
   preview.style.webkitBackgroundClip = "unset";
   preview.style.color = "white";
 
+  preview.style.fontWeight = "normal";
+  preview.style.fontStyle = "normal";
+  preview.style.textDecoration = "none";
+
+  if(document.getElementById("bold").checked)
+    preview.style.fontWeight = "bold";
+
+  if(document.getElementById("italic").checked)
+    preview.style.fontStyle = "italic";
+
+  let deco = [];
+  if(document.getElementById("underline").checked) deco.push("underline");
+  if(document.getElementById("strike").checked) deco.push("line-through");
+  preview.style.textDecoration = deco.join(" ");
+
+  /* SINGLE */
   if(mode === "single"){
-
     preview.style.color = "#3996F9";
-
     out = `&#3996F9${format}${text}`;
   }
 
+  /* GRADIENT */
   if(mode === "gradient"){
 
     const colors = ["#3996F9","#00ffcc","#ff4dff","#ffff00"];
@@ -183,7 +198,9 @@ function update(){
 
     let boosted = colors.map(c => boostColor(c,factor));
 
-    preview.style.background = `linear-gradient(90deg, ${boosted.join(",")})`;
+    preview.style.background =
+      `linear-gradient(90deg,${boosted.join(",")})`;
+
     preview.style.webkitBackgroundClip = "text";
     preview.style.color = "transparent";
 
@@ -192,6 +209,7 @@ function update(){
     }
   }
 
+  /* RAINBOW */
   if(mode === "rainbow"){
 
     const base = ["#ff0000","#ff7a00","#ffee00","#00ff4c","#00e5ff","#004cff","#b300ff"];
@@ -199,7 +217,9 @@ function update(){
 
     let boosted = base.map(c => boostColor(c,factor));
 
-    preview.style.background = `linear-gradient(90deg, ${boosted.join(",")})`;
+    preview.style.background =
+      `linear-gradient(90deg,${boosted.join(",")})`;
+
     preview.style.webkitBackgroundClip = "text";
     preview.style.color = "transparent";
 
