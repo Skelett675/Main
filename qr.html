@@ -2,136 +2,151 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>QR Generator</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<title>QR Code Generator</title>
 
 <style>
-
 body{
   margin:0;
-  font-family:Arial;
   background:#0c0d10;
+  font-family:Arial;
   color:white;
-}
-
-.container{
-  min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
+  min-height:100vh;
 }
 
 .card{
-  width:480px;
-  padding:30px;
-  border-radius:25px;
+  width:420px;
+  padding:25px;
+  border-radius:20px;
   background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(20px);
   text-align:center;
+  box-shadow:0 0 20px rgba(0,0,0,0.4);
 }
 
-/* INPUT */
 input{
   width:100%;
-  padding:12px;
+  padding:10px;
   margin-top:10px;
-  border-radius:12px;
+  border-radius:10px;
   border:none;
   background:#111;
   color:white;
 }
 
-/* QR WRAPPER CENTRING FIX */
-#qr-wrapper{
-  margin-top:20px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
-  padding:30px;
-  border-radius:25px;
-  background:rgba(255,255,255,0.05);
-  box-shadow:0 0 25px rgba(57,150,249,0.3);
-}
-
-/* QR CENTER FIX */
-#qr{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
 button{
   width:100%;
-  margin-top:15px;
+  margin-top:10px;
   padding:12px;
-  border-radius:14px;
   border:none;
+  border-radius:12px;
   background:#3996F9;
+  color:black;
   font-weight:bold;
   cursor:pointer;
 }
 
-</style>
+#qrcode{
+  margin-top:15px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:10px;
+  background:#111;
+  border-radius:12px;
+}
 
+</style>
 </head>
 
 <body>
 
-<div class="container">
 <div class="card">
 
 <h2>QR Generator</h2>
 
-<input id="text" placeholder="Text" oninput="generateQR()">
+<input id="text" placeholder="Text oder Link">
 
-<div id="qr-wrapper">
-  <div id="qr"></div>
-</div>
-
+<button onclick="generate()">Generate QR</button>
 <button onclick="downloadQR()">Download</button>
 
+<div id="qrcode"></div>
+
 </div>
-</div>
+
+<!-- QR Library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 
 <script>
 
-function generateQR(){
+let qr;
 
-const text = document.getElementById("text").value;
-const box = document.getElementById("qr");
+function generate(){
+  const text = document.getElementById("text").value || "Hello";
 
-if(!text) return;
+  document.getElementById("qrcode").innerHTML = "";
 
-box.innerHTML="";
-
-new QRCode(box,{
-text:text,
-width:220,
-height:220,
-colorDark:"#000",
-colorLight:"#fff",
-correctLevel:QRCode.CorrectLevel.H
-});
-
+  qr = new QRCode(document.getElementById("qrcode"), {
+    text: text,
+    width: 220,
+    height: 220,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
 }
 
+/* 🔥 CLEAN DOWNLOAD (NO WHITE BORDER) */
 function downloadQR(){
 
-html2canvas(document.getElementById("qr-wrapper"),{
-backgroundColor:"#fff",
-scale:3
-}).then(canvas=>{
+  const canvas = document.querySelector("#qrcode canvas");
 
-const a=document.createElement("a");
-a.download="qr.png";
-a.href=canvas.toDataURL("image/png");
-a.click();
+  if(!canvas){
+    alert("Bitte erst QR generieren");
+    return;
+  }
 
-});
+  const ctx = canvas.getContext("2d");
+  const imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
+  const data = imgData.data;
 
+  let top=canvas.height, bottom=0, left=canvas.width, right=0;
+
+  for(let y=0;y<canvas.height;y++){
+    for(let x=0;x<canvas.width;x++){
+
+      let i=(y*canvas.width+x)*4;
+
+      let alpha=data[i+3];
+
+      if(alpha>0){
+        if(x<left) left=x;
+        if(x>right) right=x;
+        if(y<top) top=y;
+        if(y>bottom) bottom=y;
+      }
+    }
+  }
+
+  let w=right-left;
+  let h=bottom-top;
+
+  let cropped=document.createElement("canvas");
+  cropped.width=w;
+  cropped.height=h;
+
+  let cctx=cropped.getContext("2d");
+
+  cctx.drawImage(canvas,
+    left,top,w,h,
+    0,0,w,h
+  );
+
+  let link=document.createElement("a");
+  link.download="qr.png";
+  link.href=cropped.toDataURL("image/png");
+  link.click();
 }
 
 </script>
